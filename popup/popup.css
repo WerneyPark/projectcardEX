@@ -1,0 +1,26 @@
+body {
+  width: 200px;
+  font-family: sans-serif;
+  padding: 10px;
+  background: #f5f5f5;
+}
+
+h3 {
+  margin-top: 0;
+  text-align: center;
+  color: #333;
+}
+
+.setting-item {
+  margin-bottom: 10px;
+}
+
+label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+input[type="checkbox"] {
+  margin-right: 8px;
+}

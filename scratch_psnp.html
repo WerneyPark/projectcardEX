@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gerador de Card Project Card - PSN Profiles">
+    <title>Gerador PSNP | Project Card</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@200..800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VMDFRKSP5Q');
+    </script>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="index.html" style="color: var(--accent-pink);">PROJECT CARD</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://re.projectcard.com.br/"><i class="bi bi-playstation"></i> Re-Project</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container main-container">
+        
+        <div class="row row-reverse-mobile">
+            
+            <div class="col-lg-5">
+                <div class="glass-panel">
+                    <h2 class="section-title"><i class="bi bi-sliders"></i> Dados</h2>
+                    
+                    <form id="formularioJogador2">
+                        
+                        <div class="row mb-3">
+                            <label for="psn_idpsnp" class="col-sm-4 col-form-label">PSN ID:</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="psn_idpsnp" class="form-control" placeholder="Seu ID" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="nivel_psnp" class="col-sm-4 col-form-label">Nível:</label>
+                            <div class="col-sm-8">
+                                <input type="number" id="nivel_psnp" class="form-control" placeholder="Automático" disabled style="opacity: 0.5;">
+                            </div>
+                        </div>
+
+                        <hr style="border-color: var(--glass-border);">
+
+                        <div class="row mb-2">
+                            <div class="col-6 mb-2">
+                                <label class="form-label text-white small"><i class="bi bi-trophy-fill" style="color:#a7b0dd"></i> Platina</label>
+                                <input type="number" id="platina_psnp" class="form-control form-control-sm" placeholder="0">
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label text-white small"><i class="bi bi-trophy-fill" style="color:#d4af37"></i> Ouro</label>
+                                <input type="number" id="ouro_psnp" class="form-control form-control-sm" placeholder="0">
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label text-white small"><i class="bi bi-trophy-fill" style="color:#c0c0c0"></i> Prata</label>
+                                <input type="number" id="prata_psnp" class="form-control form-control-sm" placeholder="0">
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label text-white small"><i class="bi bi-trophy-fill" style="color:#cd7f32"></i> Bronze</label>
+                                <input type="number" id="bronze_psnp" class="form-control form-control-sm" placeholder="0">
+                            </div>
+                        </div>
+
+                        <hr style="border-color: var(--glass-border);">
+
+                        <label class="form-label text-white mb-2">Estatísticas Gerais</label>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><input type="number" id="jogos_psnp" class="form-control form-control-sm" placeholder="Games Played"></div>
+                            <div class="col-6"><input type="text" id="tday_psnp" class="form-control form-control-sm" placeholder="Trophies/Day"></div>
+                            <div class="col-6"><input type="text" id="comple_psnp" class="form-control form-control-sm" placeholder="Completion %"></div>
+                            <div class="col-6"><input type="number" id="une_psnp" class="form-control form-control-sm" placeholder="Unearned"></div>
+                        </div>
+
+                        <label class="form-label text-white mb-2">Raridade dos Troféus</label>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4"><input type="number" id="ur_psnp" class="form-control form-control-sm text-center" placeholder="UR"></div>
+                            <div class="col-4"><input type="number" id="vr_psnp" class="form-control form-control-sm text-center" placeholder="VR"></div>
+                            <div class="col-4"><input type="number" id="rr_psnp" class="form-control form-control-sm text-center" placeholder="RR"></div>
+                            <div class="col-6"><input type="number" id="uc_psnp" class="form-control form-control-sm text-center" placeholder="UC"></div>
+                            <div class="col-6"><input type="number" id="cm_psnp" class="form-control form-control-sm text-center" placeholder="CM"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="img_perfilpsnp" class="form-label">URL Avatar</label>
+                            <input type="text" id="img_perfilpsnp" class="form-control" placeholder="http://..." required>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-7 canvas-column">
+                <div class="glass-panel h-100 d-flex flex-column align-items-center justify-content-center">
+                    <h2 class="section-title mb-4"><i class="bi bi-eye"></i> Preview</h2>
+                    
+                    <div class="canvas-wrapper" id="CanvasCartao">
+                        <canvas id="cartaoCanvas" width="419" height="610"></canvas>
+                    </div>
+
+                    <div class="w-100 px-md-5">
+                        <button onclick="baixarCard()" class="btn-save">
+                            <i class="bi bi-download"></i> Baixar Imagem (HQ)
+                        </button>
+                    </div>
+
+                    <div class="mt-3 text-muted fst-italic text-center">
+                        <small>Resolução Original: 419x610 pixels</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="py-4 mt-auto">
+        <div class="container">
+            <div class="row align-items-center">
+                
+                <div class="col-lg-5 text-center text-lg-start mb-3 mb-lg-0">
+                    <p class="mb-1 text-light">
+                        <i class="bi bi-c-circle"></i> Project Card 2025 - Release 03/07/2024.
+                    </p>
+                    <p class="mb-1">
+                        <a href="/cdn-cgi/l/email-protection#b0d3dfdec4d1c4dff0c0c2dfdad5d3c4d3d1c2d49ed3dfdd9ed2c2" class="text-decoration-none text-muted hover-pink">
+                            <i class="bi bi-envelope"></i> <span class="__cf_email__" data-cfemail="8eede1e0faeffae1cefefce1e4ebedfaedeffceaa0ede1e3a0ecfc">[email&#160;protected]</span>
+                        </a>
+                    </p>
+                    <small class="text-muted d-block mt-1">Não afiliado à Sony PlayStation.</small>
+                </div>
+
+                <div class="col-lg-7 text-center text-lg-end">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mx-2">
+                            <a href="sobre.html">Sobre</a>
+                        </li>
+                        <li class="list-inline-item mx-2">
+                            <a href="faq.html">F.A.Q</a>
+                        </li>
+                        <li class="list-inline-item mx-2">
+                            <a href="legal.html">Termos e Privacidade</a>
+                        </li>
+                        <li class="list-inline-item mx-2">
+                            <a href="creditos.html">Créditos</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="cardalfa5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputField = document.getElementById("psn_idpsnp");
+            
+            if (!inputField) return;
+
+            const secretContainer = document.createElement("div");
+            secretContainer.id = "sabbath-secret-area";
+            secretContainer.style.display = "none";
+            secretContainer.style.marginTop = "20px";
+            secretContainer.style.textAlign = "center";
+            secretContainer.style.animation = "fadeIn 1s";
+
+            secretContainer.innerHTML = `
+                <a href="sbv.html" target="_blank" style="
+                    display: inline-block;
+                    background: linear-gradient(90deg, #da4b9a, #3eb1e8);
+                    color: white;
+                    padding: 10px 25px;
+                    text-decoration: none;
+                    font-family: 'Rajdhani', sans-serif;
+                    border-radius: 50px;
+                    font-weight: bold;
+                    font-size: 1rem;
+                    box-shadow: 0 0 20px rgba(62, 177, 232, 0.4);
+                    border: 1px solid #fff;
+                    transition: transform 0.2s;
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    👑 ACESSAR COLEÇÃO SABBAVERSE ➜
+                </a>            
+            `;
+
+            inputField.parentNode.appendChild(secretContainer);
+
+            inputField.addEventListener("keyup", function(e) {
+                const textoDigitado = e.target.value.trim().toUpperCase();
+                if (textoDigitado === "SABBATH1979") {
+                    secretContainer.style.display = "block";
+                } else {
+                    secretContainer.style.display = "none";
+                }
+            });
+
+            const style = document.createElement('style');
+            style.innerHTML = `@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }`;
+            document.head.appendChild(style);
+        });
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"aabe50bd927a460d8530342cdcfb1004","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

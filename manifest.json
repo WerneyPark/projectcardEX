@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "projectcardEX",
+  "version": "1.0.0",
+  "description": "Extensão para customização e geração de cartões no PSXTrophies, MyPST e PSNProfiles",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://*.projectcard.com.br/*",
+    "*://*.psxtrophies.com.br/*",
+    "*://*.playstation.net/*",
+    "*://*.playstation.com/*",
+    "*://*.mypst.com.br/*",
+    "*://*.psnprofiles.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.psxtrophies.com.br/*"],
+      "js": [
+        "content/core/BaseExtractor.js",
+        "content/core/BaseRenderer.js",
+        "content/core/UIController.js",
+        "content/extractors/psxtExtractor.js",
+        "content/renderers/psxtDefaultRenderer.js",
+        "content/renderers/pggRenderer.js",
+        "content/renderers/psnlRenderer.js",
+        "content/psxt_script.js"
+      ],
+      "css": ["styles/psxt_styles.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://*.mypst.com.br/*"],
+      "js": [
+        "content/core/BaseExtractor.js",
+        "content/core/BaseRenderer.js",
+        "content/core/UIController.js",
+        "content/extractors/mypstExtractor.js",
+        "content/renderers/mypstDefaultRenderer.js",
+        "content/renderers/mypst2Renderer.js",
+        "content/mypst_script.js"
+      ],
+      "css": ["styles/mypst_styles.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://*.psnprofiles.com/*"],
+      "js": [
+        "content/core/BaseExtractor.js",
+        "content/core/BaseRenderer.js",
+        "content/core/UIController.js",
+        "content/extractors/psnpExtractor.js",
+        "content/renderers/psnpDefaultRenderer.js",
+        "content/psnp_script.js"
+      ],
+      "css": ["styles/psnp_styles.css"],
+      "run_at": "document_end"
+    }
+  ]
+}
