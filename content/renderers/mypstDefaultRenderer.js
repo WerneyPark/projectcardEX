@@ -168,13 +168,17 @@ class MypstDefaultRenderer extends BaseRenderer {
 
         let jComp = Number(data.jogosCompletos || 0);
         let jTot = Number(data.totalJogos || 0);
-        let perc = 0;
-        if (jTot > 0) perc = (jComp / jTot) * 100;
+        let percStr = data.percentual100 && data.percentual100 !== '0%' ? data.percentual100 : '';
+        if (!percStr) {
+            let perc = 0;
+            if (jTot > 0) perc = (jComp / jTot) * 100;
+            percStr = perc.toFixed(2) + "%";
+        }
         
         ctx.font = '20px "Gemunu Libre"';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(perc.toFixed(2) + "%", 254, 598, 93);
+        ctx.fillText(percStr, 254, 598, 93);
 
         const hoje = new Date();
         const datageracao = ("0" + hoje.getDate()).slice(-2) + "/" + ("0" + (hoje.getMonth() + 1)).slice(-2) + "/" + hoje.getFullYear() + " - " + ("0" + hoje.getHours()).slice(-2) + ":" + ("0" + hoje.getMinutes()).slice(-2);

@@ -16,7 +16,9 @@
  * - Games Played: li.games-played
  */
 class PsnpExtractor extends BaseExtractor {
-    async extractData() {
+    async extractData(onProgress) {
+        if (onProgress) onProgress("Lendo dados principais...");
+
         // --- PSN ID ---
         let psnId = '';
 

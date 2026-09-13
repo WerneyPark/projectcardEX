@@ -136,6 +136,27 @@ body.psxt-dark-mode .psxt-modal-close:hover {
   color: red !important;
 }
 
+/* Spinner de Carregamento */
+.projectcardex-spinner {
+  width: 42px;
+  height: 42px;
+  margin: 25px auto;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #3eb1e8;
+  border-radius: 50%;
+  animation: projectcardex-spin 1s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes projectcardex-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Project Card EX Section */
 .projectcardex-modal.projectcardex-modal {
   background: linear-gradient(to right top, #74286e, #632a6e, #512b6b, #3f2b67, #2c2a62);

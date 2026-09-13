@@ -1,7 +1,10 @@
 class PsxtExtractor extends BaseExtractor {
-    async extractData() {
+    async extractData(onProgress) {
+        if (onProgress) onProgress("Lendo dados principais...");
+
         const title = document.querySelector('title');
-        const psnId = title ? title.innerText.replace("Perfil de ", "").replace(" | PSX Trophies", "").trim() : '';
+        const titleText = title ? (title.innerText || title.textContent || '') : '';
+        const psnId = titleText.replace("Perfil de ", "").replace(" | PSX Trophies", "").trim();
 
         const getTrophyCount = (trophyName) => {
             const trophiesSection = document.querySelector('section[class*="trophies"]');
@@ -104,6 +107,7 @@ class PsxtExtractor extends BaseExtractor {
         // --- PLATINAS MAIS RARAS (Async) ---
         let platinasRaras = [];
         if (psnId) {
+            if (onProgress) onProgress("Buscando estatísticas e badges...");
             try {
                 const urlHist = `https://psxtrophies.com.br/${psnId}/historico?page=1&includes=PSVITA/PS3/PS4/PS5/PSPC/&trophyType=platinum&order=ph&direction=desc&rarity=all`;
                 const histResp = await fetch(urlHist);

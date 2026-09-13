@@ -8,10 +8,12 @@
  * URL de perfil: https://mypst.com.br/rank/{username}/#!perfil
  */
 class MypstExtractor extends BaseExtractor {
-    async extractData() {
+    async extractData(onProgress) {
+        if (onProgress) onProgress("Lendo dados principais...");
+
         // --- PSN ID ---
         const titleEl = document.querySelector('title');
-        const titleText = titleEl ? titleEl.innerText : '';
+        const titleText = titleEl ? (titleEl.innerText || titleEl.textContent || '') : '';
         // Formato: "myPSt | Username - Perfil"
         let psnId = '';
         const titleMatch = titleText.match(/myPSt\s*\|\s*(.+?)\s*-/i);
@@ -82,6 +84,126 @@ class MypstExtractor extends BaseExtractor {
         });
         const totalJogos = sumJogos > 0 ? sumJogos.toString() : jogos100;
 
+        // --- FETCH DADOS EXTRAS VIA AJAX (Badges, Primeira Platina, 100% Total, Usuário Desde) ---
+        let percentual100 = '0%';
+        let usuarioDesde = '';
+        let usuarioNumero = '';
+        let imgPrimeiraPlatina = '';
+        let badgesMap = {
+            'Guias': '0', 'Mensal': '0', 'Semanal': '0', 'Pioneiro': '0',
+            'Velocista': '0', 'Tartaruga': '0', 'Total Badges': '0'
+        };
+
+        if (psnId) {
+            if (onProgress) onProgress("Buscando estatísticas e badges...");
+            try {
+                // Dispara os fetches de perfil e estatísticas em paralelo
+                const [perfilHtml, statsHtml] = await Promise.all([
+                    fetch(`/rank/${psnId}/perfil/`, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    }).then(async res => res.ok ? await res.text() : null).catch(err => {
+                        console.error("Erro ao buscar perfil MyPST:", err);
+                        return null;
+                    }),
+                    fetch(`/rank/${psnId}/estatisticas/`, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    }).then(async res => res.ok ? await res.text() : null).catch(err => {
+                        console.error("Erro ao buscar estatísticas MyPST:", err);
+                        return null;
+                    })
+                ]);
+
+                // 1. Parsing da Aba Perfil (Milestones, Join Date, Badges)
+                if (perfilHtml) {
+                    const doc = new DOMParser().parseFromString(perfilHtml, 'text/html');
+
+                    // Usuário Desde
+                    const desdeSpan = Array.from(doc.querySelectorAll('span.txt08')).find(s => {
+                        const prev = s.previousElementSibling;
+                        return prev && (prev.textContent || '').includes('DESDE');
+                    });
+                    if (desdeSpan) {
+                        const match = (desdeSpan.textContent || '').match(/(\d{2}\/\d{2}\/\d{4})\s*#(\d+)/);
+                        if (match) {
+                            usuarioDesde = match[1];
+                            usuarioNumero = match[2];
+                        } else {
+                            const dMatch = desdeSpan.textContent.match(/(\d{2}\/\d{2}\/\d{4})/);
+                            if (dMatch) usuarioDesde = dMatch[1];
+                            const innerSpan = desdeSpan.querySelector('span');
+                            if (innerSpan) {
+                                const nMatch = (innerSpan.textContent || '').match(/#(\d+)/);
+                                if (nMatch) usuarioNumero = nMatch[1];
+                            }
+                        }
+                    }
+
+                    // Badges (baseado no src da imagem para não depender da ordem exata)
+                    const bMap = {
+                        'Guias': 'iconCardao05',
+                        'Mensal': 'iconCardao03',
+                        'Semanal': 'iconCardao04',
+                        'Pioneiro': 'iconCardao06',
+                        'Velocista': 'iconCardao07',
+                        'Tartaruga': 'iconCardao11',
+                        'Total Badges': 'iconCardao09'
+                    };
+                    const tdsImg = Array.from(doc.querySelectorAll('img[src*="iconCardao"]'));
+                    for (const [bName, iconStr] of Object.entries(bMap)) {
+                        const img = tdsImg.find(img => img.src.includes(iconStr));
+                        if (img) {
+                            const tdImg = img.closest('td');
+                            if (tdImg && tdImg.parentElement) {
+                                const trImg = tdImg.parentElement;
+                                const colIndex = Array.from(trImg.children).indexOf(tdImg);
+                                const trNumbers = trImg.nextElementSibling;
+                                if (trNumbers) {
+                                    const tdNumber = trNumbers.children[colIndex];
+                                    if (tdNumber) {
+                                        badgesMap[bName] = (tdNumber.textContent || '').replace(/[^\d]/g, '').trim() || '0';
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Milestone: Primeira Platina
+                    const tables = Array.from(doc.querySelectorAll('table[title*="Primeira Platina"], table[title*="Primeira platina"]'));
+                    const tablePP = tables.find(t => (t.textContent || '').includes('Primeira Platina'));
+                    if (tablePP) {
+                        const img = tablePP.querySelector('img[src*="trophy"]');
+                        if (img) imgPrimeiraPlatina = img.src;
+                    } else {
+                        const tds = Array.from(doc.querySelectorAll('td.txt09'));
+                        const td = tds.find(t => t.textContent.trim() === 'Primeira Platina');
+                        if (td) {
+                            const t = td.closest('table');
+                            if (t) {
+                                const img = t.querySelector('img[src*="trophy"]');
+                                if (img) imgPrimeiraPlatina = img.src;
+                            }
+                        }
+                    }
+                }
+
+                // 2. Parsing da Aba Estatísticas (Eficácia 100% Total)
+                if (statsHtml) {
+                    const doc = new DOMParser().parseFromString(statsHtml, 'text/html');
+                    const tds = Array.from(doc.querySelectorAll('td.txt09'));
+                    const tdTotal = tds.find(td => (td.textContent || '').includes('100% Total'));
+                    if (tdTotal) {
+                        const tr = tdTotal.parentElement;
+                        const allTds = tr.querySelectorAll('td');
+                        if (allTds.length >= 6) {
+                            percentual100 = (allTds[5].textContent || '').trim();
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Erro ao buscar dados AJAX extras:", e);
+            }
+        }
+
         return {
             psnId,
             avatar,
@@ -95,24 +217,28 @@ class MypstExtractor extends BaseExtractor {
             jogos100,
             totalJogos,
             pontosPSN,
-            mensal: '0',
-            semanal: '0',
-            guias: '0',
-            tartaruga: '0',
+            mensal: badgesMap['Mensal'],
+            semanal: badgesMap['Semanal'],
+            guias: badgesMap['Guias'],
+            tartaruga: badgesMap['Tartaruga'],
+            velocista: badgesMap['Velocista'],
+            pioneiro: badgesMap['Pioneiro'],
+            totalBadges: badgesMap['Total Badges'],
+            percentual100,
+            usuarioDesde,
+            usuarioNumero,
             pdm: '0',
             rankingGeral: '0',
             rankingDificuldade: '0',
             frase: '',
             // Campos não disponíveis no MyPST (mantidos como '0' para compatibilidade)
             pontosPH: '0',
-            completudeGeral: '0',
+            completudeGeral: percentual100, // Preenche a completude geral também
             completudePlatina: '0',
             rankingRegional: '0',
             rankingEstadual: '0',
             trofeusPorDia: '0',
-            platinasRaras: [],
-            velocista: '0',
-            pioneiro: '0',
+            platinasRaras: imgPrimeiraPlatina ? [imgPrimeiraPlatina] : [],
             dicas: '0',
             likes: '0'
         };

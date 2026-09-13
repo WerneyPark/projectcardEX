@@ -33,10 +33,11 @@ class UIController {
 
     /**
      * Retorna os dados extraídos pelo Extractor atual.
-     * @returns {PlayerData}
+     * @param {function(string): void} [onProgress] - Callback opcional para reportar progresso.
+     * @returns {Promise<PlayerData>}
      */
-    getData() {
-        return this.extractor.extractData();
+    getData(onProgress) {
+        return this.extractor.extractData(onProgress);
     }
 
     /**
@@ -107,7 +108,8 @@ class UIController {
         modal.innerHTML = `
             <div class="psxt-modal-content projectcardex-modal-content">
                 <span class="psxt-modal-close">&times;</span>
-                <h2 id="psxt-modal-status">Gerando Cartão...</h2>
+                <h2 id="psxt-modal-status">Lendo dados principais...</h2>
+                <div id="psxt-modal-spinner" class="projectcardex-spinner"></div>
                 <canvas id="cartaoCanvas"></canvas>
                 <button id="psxt-download-btn" class="psxt-card-btn">Baixar Imagem</button>
             </div>
@@ -120,7 +122,8 @@ class UIController {
             modal: modal,
             canvas: modal.querySelector('#cartaoCanvas'),
             downloadBtn: modal.querySelector('#psxt-download-btn'),
-            statusText: modal.querySelector('#psxt-modal-status')
+            statusText: modal.querySelector('#psxt-modal-status'),
+            spinner: modal.querySelector('#psxt-modal-spinner')
         };
     }
 
@@ -129,14 +132,37 @@ class UIController {
      * @param {string} rendererName
      */
     async handleGenerateCardClick(rendererName) {
-        const renderer = this.renderers[rendererName].instance;
-        const data = await this.getData();
-        const { modal, canvas, downloadBtn, statusText } = this.createCanvasModal();
-        const ctx = canvas.getContext('2d');
-        ctx.globalCompositeOperation = "source-over";
+        const renderer = this.renderers[rendererName]?.instance;
+        if (!renderer) return;
+
+        // 1. Abre o modal imediatamente com feedback inicial e spinner visível
+        const { modal, canvas, downloadBtn, statusText, spinner } = this.createCanvasModal();
 
         try {
+            const onProgress = (msg) => {
+                if (statusText) {
+                    statusText.innerText = msg;
+                }
+            };
+
+            // 2. Extrai os dados passando o callback de progresso
+            const data = await this.getData(onProgress);
+
+            // 3. Informa o início da renderização
+            if (statusText) {
+                statusText.innerText = "Pintando a cartinha...";
+            }
+
+            const ctx = canvas.getContext('2d');
+            ctx.globalCompositeOperation = "source-over";
+
+            // 4. Renderiza o cartão no canvas
             await renderer.renderCard(data, ctx, canvas);
+
+            // 5. Finalizado: oculta o spinner e exibe canvas e botão de download
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
             statusText.innerText = "Cartão Gerado!";
             canvas.style.display = 'block';
             downloadBtn.style.display = 'inline-block';
@@ -149,6 +175,9 @@ class UIController {
             };
         } catch (e) {
             console.error(e);
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
             statusText.innerText = "Erro ao gerar cartão!";
             statusText.classList.add('error-text');
         }

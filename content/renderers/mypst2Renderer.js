@@ -107,13 +107,17 @@ class Mypst2Renderer extends BaseRenderer {
         const DificuldadeNum = Number((data.rankingDificuldade || '0').replace(/[.,]/g, ''));
         
         let jComp = Number(data.jogosCompletos || 0);
-        let perc = 0;
-        if (TotalJogos > 0) perc = (jComp / TotalJogos) * 100;
+        let percStr = data.percentual100 && data.percentual100 !== '0%' ? data.percentual100 : '';
+        if (!percStr) {
+            let perc = 0;
+            if (TotalJogos > 0) perc = (jComp / TotalJogos) * 100;
+            percStr = perc.toFixed(2) + "%";
+        }
 
         ctx.textAlign = 'left';
         if (NacionalNum > 0) ctx.fillText(super.formatNumber(NacionalNum), 260, 386, 45);
         if (DificuldadeNum > 0) ctx.fillText(super.formatNumber(DificuldadeNum), 260, 409, 45);
-        ctx.fillText(perc.toFixed(2) + "%", 260, 430, 45);
+        ctx.fillText(percStr, 260, 430, 45);
 
         ctx.textAlign = 'center';
         const yBadges = 521;
