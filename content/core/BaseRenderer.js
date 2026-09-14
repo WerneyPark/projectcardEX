@@ -26,7 +26,34 @@ class BaseRenderer {
      * @returns {string}
      */
     formatNumber(n) {
-        return Number(n).toLocaleString("de-DE");
+        return typeof Formatters !== 'undefined' ? Formatters.formatNumber(n) : Number(n).toLocaleString("de-DE");
+    }
+
+    /**
+     * Carrega um mapa de imagens remotas em paralelo de forma resiliente.
+     * @param {Object.<string, string>} sourceMap - Mapa de chave/URL de imagens essenciais.
+     * @param {Object.<string, string>} [optionalMap={}] - Mapa de chave/URL opcionais (ex: avatar).
+     * @returns {Promise<Object.<string, HTMLImageElement|null>>}
+     */
+    async loadImages(sourceMap, optionalMap = {}) {
+        const allEntries = [
+            ...Object.entries(sourceMap),
+            ...Object.entries(optionalMap).filter(([_, url]) => Boolean(url))
+        ];
+
+        const results = await Promise.all(
+            allEntries.map(async ([key, url]) => {
+                try {
+                    const img = await this.loadRemoteImage(url);
+                    return [key, img];
+                } catch (err) {
+                    console.warn(`[BaseRenderer] Falha ao carregar imagem: ${key} (${url})`, err);
+                    return [key, null];
+                }
+            })
+        );
+
+        return Object.fromEntries(results);
     }
 
     /**

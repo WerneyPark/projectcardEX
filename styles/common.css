@@ -1,0 +1,172 @@
+/* ============================================================
+   styles/common.css — Estilos compartilhados da extensão projectcardEX
+   ============================================================ */
+
+/* Modal Base */
+#psxt-card-modal {
+  position: fixed;
+  z-index: 999999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.psxt-modal-content {
+  background-color: #fefefe;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  position: relative;
+  text-align: center;
+}
+
+.projectcardex-modal-content {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #444;
+  color: white;
+}
+
+.projectcardex-modal-content h2 {
+  margin-top: 0;
+  color: white;
+}
+
+.projectcardex-modal-content .psxt-modal-close {
+  color: white;
+}
+
+.psxt-modal-close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.psxt-modal-close:hover {
+  color: #fff;
+}
+
+/* Canvas e Download */
+#cartaoCanvas {
+  max-width: 100%;
+  display: none;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+#psxt-download-btn {
+  display: none;
+  margin-top: 15px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Botão Base do Card */
+.psxt-card-btn {
+  display: block;
+  color: white;
+  padding: 10px 25px;
+  text-decoration: none;
+  font-family: sans-serif;
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 1rem;
+  border: 1px solid #fff;
+  transition: transform 0.2s;
+  cursor: pointer;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.psxt-card-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Spinner de Carregamento */
+.projectcardex-spinner {
+  width: 42px;
+  height: 42px;
+  margin: 25px auto;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #3eb1e8;
+  border-radius: 50%;
+  animation: projectcardex-spin 1s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes projectcardex-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Seção do Project Card EX no DOM */
+.projectcardex-modal {
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin: 15px 0;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.projectcardex-title {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: sans-serif;
+}
+
+.projectcardex-container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.projectcardex-icon {
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+  margin: 0 4px;
+}
+
+.projectcardex-icon:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 6px 15px rgba(62, 177, 232, 0.4);
+}
+
+/* Feedback de Erro */
+.error-text {
+  color: #ff5555 !important;
+}

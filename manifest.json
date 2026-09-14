@@ -22,6 +22,10 @@
     {
       "matches": ["*://*.psxtrophies.com.br/*"],
       "js": [
+        "content/config/assets.js",
+        "content/utils/levelCalculator.js",
+        "content/utils/formatters.js",
+        "content/utils/canvasUtils.js",
         "content/core/BaseExtractor.js",
         "content/core/BaseRenderer.js",
         "content/core/UIController.js",
@@ -31,12 +35,20 @@
         "content/renderers/psnlRenderer.js",
         "content/psxt_script.js"
       ],
-      "css": ["styles/psxt_styles.css"],
+      "css": [
+        "styles/common.css",
+        "styles/psxt_styles.css"
+      ],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.mypst.com.br/*"],
       "js": [
+        "content/config/assets.js",
+        "content/config/mypstSpecialUsers.js",
+        "content/utils/levelCalculator.js",
+        "content/utils/formatters.js",
+        "content/utils/canvasUtils.js",
         "content/core/BaseExtractor.js",
         "content/core/BaseRenderer.js",
         "content/core/UIController.js",
@@ -45,12 +57,19 @@
         "content/renderers/mypst2Renderer.js",
         "content/mypst_script.js"
       ],
-      "css": ["styles/mypst_styles.css"],
+      "css": [
+        "styles/common.css",
+        "styles/mypst_styles.css"
+      ],
       "run_at": "document_end"
     },
     {
       "matches": ["*://*.psnprofiles.com/*"],
       "js": [
+        "content/config/assets.js",
+        "content/utils/levelCalculator.js",
+        "content/utils/formatters.js",
+        "content/utils/canvasUtils.js",
         "content/core/BaseExtractor.js",
         "content/core/BaseRenderer.js",
         "content/core/UIController.js",
@@ -58,7 +77,10 @@
         "content/renderers/psnpDefaultRenderer.js",
         "content/psnp_script.js"
       ],
-      "css": ["styles/psnp_styles.css"],
+      "css": [
+        "styles/common.css",
+        "styles/psnp_styles.css"
+      ],
       "run_at": "document_end"
     }
   ]
