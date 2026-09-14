@@ -66,11 +66,6 @@ class MypstDefaultRenderer extends BaseRenderer {
         
         if (images.imgFundo) ctx.drawImage(images.imgFundo, 0, 0);
 
-        if (images.avatar) {
-            ctx.drawImage(images.avatar, 91, 91, 300, 300);
-            if (images.imgTperf) ctx.drawImage(images.imgTperf, 0, 0);
-        }
-
         const mapBases = {
             "WerneyPark": {normal: images.basewp, perfil: images.basewpb},
             "FBanin": {normal: images.basebanin, perfil: images.basebaninb},
@@ -124,6 +119,13 @@ class MypstDefaultRenderer extends BaseRenderer {
         } else if (idsPlatina.includes(psnId) && images.baseplatina) {
             ctx.drawImage(images.baseplatina, 0, 0);
         }
+
+        if (images.avatar) {
+            ctx.drawImage(images.avatar, 91, 91, 300, 300);
+            if (images.imgTperf) ctx.drawImage(images.imgTperf, 0, 0);
+        }
+
+
 
         if (psnId) {
             ctx.font = '55px "Gemunu Libre"';
