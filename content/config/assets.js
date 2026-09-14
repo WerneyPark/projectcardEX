@@ -25,7 +25,9 @@ const PSN_LEVEL_ASSETS = {
 const EXTENSION_ICONS = {
     psxtLogo: "https://projectcard.com.br/img/icons/logo180.png",
     pggLogo: "https://projectcard.com.br/img/icons/pggLogo64.png",
-    psnlLogo: "https://projectcard.com.br/img/icons/icone_psnl.png",
+    psnlLogo: "https://projectcard.com.br/img/icons/psnlLogo64.png",
+    mypstLogo: "https://projectcard.com.br/img/icons/mypst1Logo64.png",
+    mypstLogo2: "https://projectcard.com.br/img/icons/mypst2Logo64.png",
     defaultCard: "https://projectcard.com.br/img/ALFA/projectcard.png"
 };
 

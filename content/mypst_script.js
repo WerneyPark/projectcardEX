@@ -18,14 +18,14 @@ const mypstController = new UIController(mypstExtractor, {
 mypstController.registerRenderer(
     'mypst',
     new MypstDefaultRenderer(),
-    'https://projectcard.com.br/img/ALFA/projectcard.png',
+    'https://projectcard.com.br/img/icons/mypst1Logo64.png',
     'Gerar Cartão MyPST 1'
 );
 
 mypstController.registerRenderer(
     'mypst2',
     new Mypst2Renderer(),
-    'https://projectcard.com.br/img/ALFA/projectcard.png',
+    'https://projectcard.com.br/img/icons/mypst2Logo64.png',
     'Gerar Cartão MyPST 2'
 );
 

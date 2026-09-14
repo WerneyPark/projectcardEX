@@ -27,13 +27,13 @@ const MYPST_SPECIAL_IMAGES = {
  */
 const MYPST_USER_VARIANTS = {
     "MamyBR": [
-        { id: "redatora",     label: "Redatora",     normalKey: "basered",     perfilKey: "baseredb",   isDefault: true },
-        { id: "moderadora",   label: "Moderadora",   normalKey: "basemod",     perfilKey: "basemodb" },
-        { id: "noticiarista", label: "Noticiarista", normalKey: "basenot",     perfilKey: "basenotb" }
+        { id: "moderadora",   label: "Moderadora",   normalKey: "basemod",     perfilKey: "basemodb", isDefault: true },
+        { id: "admin",     label: "ADM",     normalKey: "basered",     perfilKey: "baseredb"},
+        { id: "noticias", label: "Noticias", normalKey: "basenot",     perfilKey: "basenotb" }
     ],
     "EduNews": [
-        { id: "platina",      label: "Platina",      normalKey: "baseplatina", perfilKey: "imgTperf",   isDefault: true },
-        { id: "noticiarista", label: "Noticiarista", normalKey: "basenot",     perfilKey: "basenotb" },
+        { id: "noticias", label: "Noticias", normalKey: "basenot",     perfilKey: "basenotb", isDefault: true },
+        { id: "platina",      label: "Platina",      normalKey: "baseplatina", perfilKey: "imgTperf" },
         { id: "moderador",    label: "Moderador",    normalKey: "basemod",     perfilKey: "basemodb" }
     ],
     "FBanin": [
@@ -41,8 +41,8 @@ const MYPST_USER_VARIANTS = {
         { id: "moderador",    label: "Moderador",    normalKey: "basemod",     perfilKey: "basemodb" }
     ],
     "MGZoio": [
-        { id: "redator",      label: "Redator",      normalKey: "basered",     perfilKey: "baseredb",   isDefault: true },
-        { id: "denunciante",  label: "Denunciante",  normalKey: "baseden",     perfilKey: "basedenb" },
+        { id: "denincia",  label: "Denuncia",  normalKey: "baseden",     perfilKey: "basedenb", isDefault: true  },
+        { id: "admin",      label: "ADM",      normalKey: "basered",     perfilKey: "baseredb",},
         { id: "moderador",    label: "Moderador",    normalKey: "basemod",     perfilKey: "basemodb" }
     ]
 };

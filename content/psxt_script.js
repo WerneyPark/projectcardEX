@@ -22,7 +22,7 @@ uiController.registerRenderer(
 uiController.registerRenderer(
     'psnl', 
     new PsnlRenderer(), 
-    'https://projectcard.com.br/img/icons/icone_psnl.png', // Usando um placeholder ou icone específico se houver
+    'https://projectcard.com.br/img/icons/psnlLogo64.png', // Usando um placeholder ou icone específico se houver
     'Gerar Cartão PSN Legends'
 );
 
