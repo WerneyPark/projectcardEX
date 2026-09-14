@@ -68,11 +68,14 @@ class MypstExtractor extends BaseExtractor {
             if (m) pontosPSN = m[1].trim();
         }
 
-        // --- TOTAL DE JOGOS (Regra de Três via Completude Platina) ---
-        // No MyPST não temos completude, mas temos jogos100 (jogos 100%).
-        // Aqui usamos: totalJogos = plat * 100 / completudePlatina (se disponível).
-        // Como não temos completudePlatina direto, usamos jogos100 como aproximação de "Batalhas".
-        // O campo será preenchido com jogos100 (jogos com 100% de troféus obtidos).
+        // --- FRASE DE PERFIL ---
+        let frase = '';
+        const fraseEl = document.querySelector('.frase_user_header');
+        if (fraseEl) {
+            frase = (fraseEl.textContent || '').trim();
+        }
+
+        // --- TOTAL DE JOGOS (Fallback inicial antes das estatísticas) ---
         let sumJogos = 0;
         const platRows = document.querySelectorAll('tr.txt19');
         platRows.forEach(row => {
@@ -82,23 +85,26 @@ class MypstExtractor extends BaseExtractor {
                 if (!isNaN(val)) sumJogos += val;
             }
         });
-        const totalJogos = sumJogos > 0 ? sumJogos.toString() : jogos100;
+        let totalJogos = sumJogos > 0 ? sumJogos.toString() : jogos100;
 
-        // --- FETCH DADOS EXTRAS VIA AJAX (Badges, Primeira Platina, 100% Total, Usuário Desde) ---
+        // --- FETCH DADOS EXTRAS VIA AJAX (Badges, Primeira Platina, 100% Total, Rankings, PDM) ---
         let percentual100 = '0%';
         let usuarioDesde = '';
         let usuarioNumero = '';
         let imgPrimeiraPlatina = '';
+        let rankingGeral = '0';
+        let rankingDificuldade = '0';
+        let pdm = '0';
         let badgesMap = {
             'Guias': '0', 'Mensal': '0', 'Semanal': '0', 'Pioneiro': '0',
             'Velocista': '0', 'Tartaruga': '0', 'Total Badges': '0'
         };
 
         if (psnId) {
-            if (onProgress) onProgress("Buscando estatísticas e badges...");
+            if (onProgress) onProgress("Buscando estatísticas, rankings e PDM...");
             try {
-                // Dispara os fetches de perfil e estatísticas em paralelo
-                const [perfilHtml, statsHtml] = await Promise.all([
+                // Dispara os fetches de perfil, estatísticas e PDM em paralelo
+                const [perfilHtml, statsHtml, pdmHtml] = await Promise.all([
                     fetch(`/rank/${psnId}/perfil/`, {
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
                     }).then(async res => res.ok ? await res.text() : null).catch(err => {
@@ -110,10 +116,16 @@ class MypstExtractor extends BaseExtractor {
                     }).then(async res => res.ok ? await res.text() : null).catch(err => {
                         console.error("Erro ao buscar estatísticas MyPST:", err);
                         return null;
+                    }),
+                    fetch(`/new_rank/?type=DIFICULDADE&busca=${encodeURIComponent(psnId)}&R=brasil&t=all`, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    }).then(async res => res.ok ? await res.text() : null).catch(err => {
+                        console.error("Erro ao buscar PDM MyPST:", err);
+                        return null;
                     })
                 ]);
 
-                // 1. Parsing da Aba Perfil (Milestones, Join Date, Badges)
+                // 1. Parsing da Aba Perfil (Milestones, Join Date, Badges, Rankings)
                 if (perfilHtml) {
                     const doc = new DOMParser().parseFromString(perfilHtml, 'text/html');
 
@@ -184,9 +196,40 @@ class MypstExtractor extends BaseExtractor {
                             }
                         }
                     }
+
+                    // Rankings: Geral e Dificuldade
+                    const aGeral = Array.from(doc.querySelectorAll('a.lnk02')).find(a => {
+                        const txt = a.textContent || '';
+                        const href = a.getAttribute('href') || '';
+                        return txt.includes('RANKING GERAL') && (href.includes('t:all') || !href.includes('t:'));
+                    });
+                    if (aGeral) {
+                        const trGeral = aGeral.closest('tr');
+                        if (trGeral) {
+                            const tds = trGeral.querySelectorAll('td');
+                            if (tds.length >= 4) {
+                                rankingGeral = (tds[3].textContent || '').replace(/[^\d]/g, '').trim() || '0';
+                            }
+                        }
+                    }
+
+                    const aDif = Array.from(doc.querySelectorAll('a.lnk02')).find(a => {
+                        const txt = a.textContent || '';
+                        const href = a.getAttribute('href') || '';
+                        return txt.includes('RANKING DIFICULDADE') && (href.includes('t:all') || !href.includes('t:'));
+                    });
+                    if (aDif) {
+                        const trDif = aDif.closest('tr');
+                        if (trDif) {
+                            const tds = trDif.querySelectorAll('td');
+                            if (tds.length >= 4) {
+                                rankingDificuldade = (tds[3].textContent || '').replace(/[^\d]/g, '').trim() || '0';
+                            }
+                        }
+                    }
                 }
 
-                // 2. Parsing da Aba Estatísticas (Eficácia 100% Total)
+                // 2. Parsing da Aba Estatísticas (Eficácia 100% Total e Total de Jogos)
                 if (statsHtml) {
                     const doc = new DOMParser().parseFromString(statsHtml, 'text/html');
                     const tds = Array.from(doc.querySelectorAll('td.txt09'));
@@ -194,8 +237,36 @@ class MypstExtractor extends BaseExtractor {
                     if (tdTotal) {
                         const tr = tdTotal.parentElement;
                         const allTds = tr.querySelectorAll('td');
+                        if (allTds.length >= 2) {
+                            const tVal = (allTds[1].textContent || '').replace(/[^\d]/g, '').trim();
+                            if (tVal) totalJogos = tVal;
+                        }
                         if (allTds.length >= 6) {
                             percentual100 = (allTds[5].textContent || '').trim();
+                        }
+                    }
+                }
+
+                // 3. Parsing do PDM (Ranking de Dificuldade)
+                if (pdmHtml) {
+                    const doc = new DOMParser().parseFromString(pdmHtml, 'text/html');
+                    const links = Array.from(doc.querySelectorAll('a.link_txt_rank'));
+                    const userLink = links.find(a => {
+                        const txt = a.textContent.trim().toLowerCase();
+                        const href = (a.getAttribute('href') || '').toLowerCase();
+                        return txt === psnId.toLowerCase() || href === `/rank/${psnId.toLowerCase()}` || href === `/rank/${psnId.toLowerCase()}/`;
+                    });
+                    if (userLink) {
+                        const row = userLink.closest('.my_hover') || userLink.closest('.txt_rank');
+                        if (row) {
+                            const cols = Array.from(row.querySelectorAll('.coluna'));
+                            if (cols.length >= 20) {
+                                pdm = (cols[19].textContent || '').trim();
+                            }
+                            if (rankingDificuldade === '0' && cols.length >= 2) {
+                                const rd = (cols[1].textContent || '').replace(/[^\d]/g, '').trim();
+                                if (rd) rankingDificuldade = rd;
+                            }
                         }
                     }
                 }
@@ -227,10 +298,10 @@ class MypstExtractor extends BaseExtractor {
             percentual100,
             usuarioDesde,
             usuarioNumero,
-            pdm: '0',
-            rankingGeral: '0',
-            rankingDificuldade: '0',
-            frase: '',
+            pdm,
+            rankingGeral,
+            rankingDificuldade,
+            frase,
             // Campos não disponíveis no MyPST (mantidos como '0' para compatibilidade)
             pontosPH: '0',
             completudeGeral: percentual100, // Preenche a completude geral também
