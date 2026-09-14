@@ -64,11 +64,18 @@ class MypstDefaultRenderer extends BaseRenderer {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        if (images.imgFundo) ctx.drawImage(images.imgFundo, 0, 0);
+        //if (images.imgFundo) ctx.drawImage(images.imgFundo, 0, 0);
+
+
+        
+
 
         const mapBases = {
             "WerneyPark": {normal: images.basewp, perfil: images.basewpb},
+
             "FBanin": {normal: images.basebanin, perfil: images.basebaninb},
+
+
             "LoiroCroft": {normal: images.baseanalista, perfil: images.baseanalistab},
             "LucasIIGD": {normal: images.baseanalista, perfil: images.baseanalistab},
             "MGZoio": {normal: images.basered, perfil: images.baseredb},
@@ -101,13 +108,18 @@ class MypstDefaultRenderer extends BaseRenderer {
             "LucasDiasC": {normal: images.baseden, perfil: images.basedenb},
             "lionflu": {normal: images.baseden, perfil: images.basedenb},
             " MGZoio": {normal: images.baseden, perfil: images.basedenb},
-            " MGZoio ": {normal: images.basemod, perfil: images.basemodb}
+            " MGZoio ": {normal: images.basemod, perfil: images.basemodb},
+
+            "baseplat": {normal: images.baseplatina, perfil: images.imgTperf},
+
         };
 
+        mapBases.EduNews = mapBases.SABBATH1979 = mapBases.laddyvalentine = mapBases.bklautau = mapBases.Marcel_pfs1 = mapBases.DaniloSouza84 = mapBases.Hidra13 = mapBases.SobrinhaYstranha = mapBases["Ikaros-NEX"] = mapBases.dfop02 = mapBases.baseplat;
+        
         const idsPlatina = ["EduNews", "SABBATH1979", "laddyvalentine", "bklautau", "Marcel_pfs1", "DaniloSouza84", "Hidra13", "SobrinhaYstranha", "Ikaros-NEX", "dfop02"];
 
         let psnId = data.psnId || '';
-        
+        /*
         if (mapBases[psnId]) {
             if (images.avatar && mapBases[psnId].perfil) {
                 let offsetY = 0;
@@ -119,10 +131,13 @@ class MypstDefaultRenderer extends BaseRenderer {
         } else if (idsPlatina.includes(psnId) && images.baseplatina) {
             ctx.drawImage(images.baseplatina, 0, 0);
         }
+*/
+
 
         if (images.avatar) {
+            ctx.drawImage(mapBases[psnId]?.normal || images.imgFundo, 0, 0);
             ctx.drawImage(images.avatar, 91, 91, 300, 300);
-            if (images.imgTperf) ctx.drawImage(images.imgTperf, 0, 0);
+            if (images.imgTperf) ctx.drawImage(mapBases[psnId]?.perfil || images.imgTperf, 0, 0);
         }
 
 
@@ -156,12 +171,12 @@ class MypstDefaultRenderer extends BaseRenderer {
 
         const statsY = 563;
         ctx.textAlign = 'center';
-        if (data.mensal && data.mensal !== '0') ctx.fillText(data.mensal, 206, statsY, 34);
-        if (data.semanal && data.semanal !== '0') ctx.fillText(data.semanal, 243, statsY, 34);
-        if (data.guias && data.guias !== '0') ctx.fillText(data.guias, 280, statsY, 34);
-        if (data.pioneiro && data.pioneiro !== '0') ctx.fillText(data.pioneiro, 317, statsY, 34);
-        if (data.velocista && data.velocista !== '0') ctx.fillText(data.velocista, 354, statsY, 34);
-        if (data.tartaruga && data.tartaruga !== '0') ctx.fillText(data.tartaruga, 391, statsY, 34);
+        if (data.mensal && data.mensal) ctx.fillText(data.mensal, 206, statsY, 34);
+        if (data.semanal && data.semanal) ctx.fillText(data.semanal, 243, statsY, 34);
+        if (data.guias && data.guias) ctx.fillText(data.guias, 280, statsY, 34);
+        if (data.pioneiro && data.pioneiro) ctx.fillText(data.pioneiro, 317, statsY, 34);
+        if (data.velocista && data.velocista) ctx.fillText(data.velocista, 354, statsY, 34);
+        if (data.tartaruga && data.tartaruga) ctx.fillText(data.tartaruga, 391, statsY, 34);
 
         if (pplatImg) {
             ctx.drawImage(pplatImg, 102, 520, 70, 70);
