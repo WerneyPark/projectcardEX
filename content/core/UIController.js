@@ -111,6 +111,7 @@ class UIController {
                 <h2 id="psxt-modal-status">Lendo dados principais...</h2>
                 <div id="psxt-modal-spinner" class="projectcardex-spinner"></div>
                 <canvas id="cartaoCanvas"></canvas>
+                <div id="projectcardex-variants-container" class="projectcardex-variants-container" style="display: none;"></div>
                 <button id="psxt-download-btn" class="psxt-card-btn">Baixar Imagem</button>
             </div>
         `;
@@ -123,7 +124,8 @@ class UIController {
             canvas: modal.querySelector('#cartaoCanvas'),
             downloadBtn: modal.querySelector('#psxt-download-btn'),
             statusText: modal.querySelector('#psxt-modal-status'),
-            spinner: modal.querySelector('#psxt-modal-spinner')
+            spinner: modal.querySelector('#psxt-modal-spinner'),
+            variantsContainer: modal.querySelector('#projectcardex-variants-container')
         };
     }
 
@@ -136,7 +138,7 @@ class UIController {
         if (!renderer) return;
 
         // 1. Abre o modal imediatamente com feedback inicial e spinner visível
-        const { modal, canvas, downloadBtn, statusText, spinner } = this.createCanvasModal();
+        const { modal, canvas, downloadBtn, statusText, spinner, variantsContainer } = this.createCanvasModal();
 
         try {
             const onProgress = (msg) => {
@@ -167,12 +169,59 @@ class UIController {
             canvas.style.display = 'block';
             downloadBtn.style.display = 'inline-block';
 
+            let currentVariantSuffix = '';
+
             downloadBtn.onclick = () => {
                 const link = document.createElement('a');
-                link.download = `card_${rendererName}_${data.psnId || 'jogador'}.png`;
+                const suffix = currentVariantSuffix ? `_${currentVariantSuffix}` : '';
+                link.download = `card_${rendererName}_${data.psnId || 'jogador'}${suffix}.png`;
                 link.href = canvas.toDataURL("image/png", 1.0);
                 link.click();
             };
+
+            // 6. Gerenciamento dinâmico de variantes (se houver)
+            const variants = typeof renderer.getAvailableVariants === 'function'
+                ? renderer.getAvailableVariants(data.psnId)
+                : [];
+
+            if (variantsContainer) {
+                variantsContainer.innerHTML = '';
+                if (variants && variants.length > 1) {
+                    const activeVariant = variants.find(v => v.isDefault) || variants[0];
+                    currentVariantSuffix = activeVariant.id;
+
+                    const title = document.createElement('span');
+                    title.className = 'projectcardex-variants-title';
+                    title.innerText = 'Variações de Cartão:';
+                    variantsContainer.appendChild(title);
+
+                    const buttonsWrapper = document.createElement('div');
+                    buttonsWrapper.className = 'projectcardex-variants-buttons';
+
+                    variants.forEach(variant => {
+                        const chip = document.createElement('button');
+                        chip.type = 'button';
+                        chip.className = `projectcardex-variant-chip ${variant.id === activeVariant.id ? 'active' : ''}`;
+                        chip.innerText = variant.label;
+
+                        chip.onclick = async () => {
+                            buttonsWrapper.querySelectorAll('.projectcardex-variant-chip').forEach(b => b.classList.remove('active'));
+                            chip.classList.add('active');
+                            currentVariantSuffix = variant.id;
+
+                            // Redesenha instantaneamente com a variante selecionada
+                            await renderer.renderCard(data, ctx, canvas, { variantId: variant.id });
+                        };
+
+                        buttonsWrapper.appendChild(chip);
+                    });
+
+                    variantsContainer.appendChild(buttonsWrapper);
+                    variantsContainer.style.display = 'flex';
+                } else {
+                    variantsContainer.style.display = 'none';
+                }
+            }
         } catch (e) {
             console.error(e);
             if (spinner) {

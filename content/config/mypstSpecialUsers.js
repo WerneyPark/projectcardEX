@@ -22,6 +22,34 @@ const MYPST_SPECIAL_IMAGES = {
     basenotb: "https://projectcard.com.br/img/ALFA/basenotb.png"
 };
 
+/**
+ * Usuários com múltiplas variantes de cartões (selecionáveis na interface).
+ */
+const MYPST_USER_VARIANTS = {
+    "MamyBR": [
+        { id: "redatora",     label: "Redatora",     normalKey: "basered",     perfilKey: "baseredb",   isDefault: true },
+        { id: "moderadora",   label: "Moderadora",   normalKey: "basemod",     perfilKey: "basemodb" },
+        { id: "noticiarista", label: "Noticiarista", normalKey: "basenot",     perfilKey: "basenotb" }
+    ],
+    "EduNews": [
+        { id: "platina",      label: "Platina",      normalKey: "baseplatina", perfilKey: "imgTperf",   isDefault: true },
+        { id: "noticiarista", label: "Noticiarista", normalKey: "basenot",     perfilKey: "basenotb" },
+        { id: "moderador",    label: "Moderador",    normalKey: "basemod",     perfilKey: "basemodb" }
+    ],
+    "FBanin": [
+        { id: "exclusiva",    label: "Especial Banin", normalKey: "basebanin", perfilKey: "basebaninb", isDefault: true },
+        { id: "moderador",    label: "Moderador",    normalKey: "basemod",     perfilKey: "basemodb" }
+    ],
+    "MGZoio": [
+        { id: "redator",      label: "Redator",      normalKey: "basered",     perfilKey: "baseredb",   isDefault: true },
+        { id: "denunciante",  label: "Denunciante",  normalKey: "baseden",     perfilKey: "basedenb" },
+        { id: "moderador",    label: "Moderador",    normalKey: "basemod",     perfilKey: "basemodb" }
+    ]
+};
+
+/**
+ * Usuários com skin única atribuída automaticamente.
+ */
 const MYPST_SPECIAL_USERS = {
     "WerneyPark":       { normalKey: "basewp",       perfilKey: "basewpb" },
     "FBanin":           { normalKey: "basebanin",    perfilKey: "basebaninb" },
@@ -46,18 +74,11 @@ const MYPST_SPECIAL_USERS = {
     "STARBLAC":         { normalKey: "basenot",      perfilKey: "basenotb" },
     "blackgndrf":       { normalKey: "basenot",      perfilKey: "basenotb" },
     "Tio_Maluco":       { normalKey: "basenot",      perfilKey: "basenotb" },
-    " EduNews":         { normalKey: "basenot",      perfilKey: "basenotb" },
-    " EduNews ":        { normalKey: "basemod",      perfilKey: "basemodb" },
-    " MamyBR":          { normalKey: "basemod",      perfilKey: "basemodb" },
-    " MamyBR ":         { normalKey: "basenot",      perfilKey: "basenotb" },
     "gabriellobo1101":  { normalKey: "basemod",      perfilKey: "basemodb" },
-    " FBanin":          { normalKey: "basemod",      perfilKey: "basemodb" },
     "MorpheuVRJ":       { normalKey: "basemod",      perfilKey: "basemodb" },
     "Tognassolo":       { normalKey: "baseden",      perfilKey: "basedenb" },
     "LucasDiasC":       { normalKey: "baseden",      perfilKey: "basedenb" },
-    "lionflu":          { normalKey: "baseden",      perfilKey: "basedenb" },
-    " MGZoio":          { normalKey: "baseden",      perfilKey: "basedenb" },
-    " MGZoio ":         { normalKey: "basemod",      perfilKey: "basemodb" }
+    "lionflu":          { normalKey: "baseden",      perfilKey: "basedenb" }
 };
 
 const MYPST_PLATINUM_IDS = [
@@ -67,18 +88,50 @@ const MYPST_PLATINUM_IDS = [
 ];
 
 /**
+ * Retorna as variantes de cartões disponíveis para um PSN ID.
+ * @param {string} psnId
+ * @returns {Array<{ id: string, label: string, normalKey: string, perfilKey: string, isDefault?: boolean }>}
+ */
+function getMypstUserVariants(psnId) {
+    if (!psnId) return [];
+    return MYPST_USER_VARIANTS[psnId] || [];
+}
+
+/**
  * Resolve as imagens de fundo e perfil para um usuário do MyPST.
+ * Suporta seleção dinâmica de variante via variantId.
  * @param {string} psnId
  * @param {Object} images - Imagens carregadas
  * @param {HTMLImageElement} defaultFundo
  * @param {HTMLImageElement} defaultPerfil
+ * @param {string} [variantId] - Identificador da variante desejada
  * @returns {{ normal: HTMLImageElement, perfil: HTMLImageElement }}
  */
-function resolveMypstUserBases(psnId, images, defaultFundo, defaultPerfil) {
+function resolveMypstUserBases(psnId, images, defaultFundo, defaultPerfil, variantId = null) {
     if (!psnId) {
         return { normal: defaultFundo, perfil: defaultPerfil };
     }
 
+    // 1. Verifica se o usuário possui variantes cadastradas
+    const variants = getMypstUserVariants(psnId);
+    if (variants && variants.length > 0) {
+        let activeVariant = null;
+        if (variantId) {
+            activeVariant = variants.find(v => v.id === variantId);
+        }
+        if (!activeVariant) {
+            activeVariant = variants.find(v => v.isDefault) || variants[0];
+        }
+
+        if (activeVariant) {
+            return {
+                normal: images[activeVariant.normalKey] || defaultFundo,
+                perfil: images[activeVariant.perfilKey] || defaultPerfil
+            };
+        }
+    }
+
+    // 2. Usuário com skin única cadastrada
     if (MYPST_SPECIAL_USERS[psnId]) {
         const conf = MYPST_SPECIAL_USERS[psnId];
         return {
@@ -87,6 +140,7 @@ function resolveMypstUserBases(psnId, images, defaultFundo, defaultPerfil) {
         };
     }
 
+    // 3. Usuário do Clube da Platina
     if (MYPST_PLATINUM_IDS.includes(psnId)) {
         return {
             normal: images.baseplatina || defaultFundo,
@@ -94,18 +148,23 @@ function resolveMypstUserBases(psnId, images, defaultFundo, defaultPerfil) {
         };
     }
 
+    // 4. Jogador padrão
     return { normal: defaultFundo, perfil: defaultPerfil };
 }
 
 if (typeof globalThis !== 'undefined') {
     globalThis.MYPST_SPECIAL_IMAGES = MYPST_SPECIAL_IMAGES;
+    globalThis.MYPST_USER_VARIANTS = MYPST_USER_VARIANTS;
     globalThis.MYPST_SPECIAL_USERS = MYPST_SPECIAL_USERS;
     globalThis.MYPST_PLATINUM_IDS = MYPST_PLATINUM_IDS;
+    globalThis.getMypstUserVariants = getMypstUserVariants;
     globalThis.resolveMypstUserBases = resolveMypstUserBases;
 }
 if (typeof window !== 'undefined') {
     window.MYPST_SPECIAL_IMAGES = MYPST_SPECIAL_IMAGES;
+    window.MYPST_USER_VARIANTS = MYPST_USER_VARIANTS;
     window.MYPST_SPECIAL_USERS = MYPST_SPECIAL_USERS;
     window.MYPST_PLATINUM_IDS = MYPST_PLATINUM_IDS;
+    window.getMypstUserVariants = getMypstUserVariants;
     window.resolveMypstUserBases = resolveMypstUserBases;
 }

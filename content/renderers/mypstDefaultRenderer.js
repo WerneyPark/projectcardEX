@@ -2,7 +2,16 @@
  * MypstDefaultRenderer — Gera o card visual para perfis do MyPST.
  */
 class MypstDefaultRenderer extends BaseRenderer {
-    async renderCard(data, ctx, canvas) {
+    /**
+     * Retorna as variantes disponíveis para um PSN ID no MyPST.
+     * @param {string} psnId
+     * @returns {Array}
+     */
+    getAvailableVariants(psnId) {
+        return typeof getMypstUserVariants === 'function' ? getMypstUserVariants(psnId) : [];
+    }
+
+    async renderCard(data, ctx, canvas, options = {}) {
         canvas.width = 419;
         canvas.height = 610;
 
@@ -23,8 +32,9 @@ class MypstDefaultRenderer extends BaseRenderer {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const psnId = data.psnId || '';
+        const variantId = options?.variantId || null;
         const userBases = typeof resolveMypstUserBases === 'function' 
-            ? resolveMypstUserBases(psnId, images, images.imgFundo, images.imgTperf)
+            ? resolveMypstUserBases(psnId, images, images.imgFundo, images.imgTperf, variantId)
             : { normal: images.imgFundo, perfil: images.imgTperf };
 
         if (userBases.normal) {
@@ -112,4 +122,11 @@ class MypstDefaultRenderer extends BaseRenderer {
             ctx.drawImage(imgNivel, nx, ny, 49, 49);
         }
     }
+}
+
+if (typeof globalThis !== 'undefined') {
+    globalThis.MypstDefaultRenderer = MypstDefaultRenderer;
+}
+if (typeof window !== 'undefined') {
+    window.MypstDefaultRenderer = MypstDefaultRenderer;
 }

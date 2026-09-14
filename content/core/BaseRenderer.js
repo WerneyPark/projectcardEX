@@ -67,3 +67,10 @@ class BaseRenderer {
         throw new Error("O método renderCard() deve ser implementado pelas subclasses.");
     }
 }
+
+if (typeof globalThis !== 'undefined') {
+    globalThis.BaseRenderer = BaseRenderer;
+}
+if (typeof window !== 'undefined') {
+    window.BaseRenderer = BaseRenderer;
+}
