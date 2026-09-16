@@ -9,13 +9,23 @@
   box-shadow: 0 0 20px rgba(35, 91, 194, 0.4);
 }
 
-/* Tema Específico da Seção MyPST */
+/* Tema Específico da Seção MyPST (Barra Lateral Direita) */
 .projectcardex-modal {
   background: linear-gradient(to right, #1a3d80, #235bc2);
   border: 1px solid #0f2d6b;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  max-width: 253px;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px 12px;
 }
 
 .projectcardex-title {
   color: #a0c0ff;
+  text-align: center;
+}
+
+/* Centraliza os botões dentro dos 253px da barra lateral */
+#menu .projectcardex-container {
+  justify-content: center;
 }

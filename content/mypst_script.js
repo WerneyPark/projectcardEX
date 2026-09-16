@@ -5,13 +5,12 @@
  * Usamos um MutationObserver + setInterval para garantir que o DOM esteja
  * populado antes de injetar a UI.
  *
- * Ponto de injeção: div#meio (barra azul com level/pontos), inserindo antes dela.
+ * Ponto de injeção: barra lateral direita (#menu), entre o banner MyPlus e Lançamentos.
  */
 const mypstExtractor = new MypstExtractor();
 const mypstController = new UIController(mypstExtractor, {
-    // O bloco de pontos/level fica em div#meio (segundo #meio é o de stats)
-    primarySelector: 'div#meio',
-    fallbackSelector: 'div[style*="235bc2"]',
+    primarySelector: '#menu tr:has(img[src*="Lancamentos"])',
+    fallbackSelector: '#menu tr:has(a[href*="jogos/?index=lan"]), #menu a[href*="jogos/?index=lan"], #menu img[src*="Lancamentos"]',
     insertPosition: 'before'
 });
 

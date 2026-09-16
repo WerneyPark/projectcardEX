@@ -53,8 +53,13 @@ class UIController {
             ? fallbackSelector.split(',').map(s => document.querySelector(s.trim())).find(Boolean)
             : null;
 
-        const anchorEl = primaryEl || fallbackEl;
+        let anchorEl = primaryEl || fallbackEl;
         if (!anchorEl) return;
+
+        // Se o elemento âncora estiver na tabela lateral (#menu), garantir injeção no nível da linha (TR)
+        if (anchorEl.closest && anchorEl.closest('#menu table tr')) {
+            anchorEl = anchorEl.closest('#menu table tr');
+        }
 
         const modalSection = document.createElement('section');
         modalSection.className = 'projectcardex-modal';
