@@ -27,9 +27,9 @@ const MYPST_SPECIAL_IMAGES = {
  */
 const MYPST_USER_VARIANTS = {
     "MamyBR": [
-        { id: "moderadora",   label: "Moderadora",   normalKey: "basemod",     perfilKey: "basemodb", isDefault: true },
+        { id: "moderadora",   label: "Moderadora",   normalKey: "basemod",     perfilKey: "basemodb"},
         { id: "admin",     label: "ADM",     normalKey: "basered",     perfilKey: "baseredb"},
-        { id: "noticias", label: "Noticias", normalKey: "basenot",     perfilKey: "basenotb" }
+        { id: "noticias", label: "Noticias", normalKey: "basenot",     perfilKey: "basenotb",  isDefault: true  }
     ],
     "EduNews": [
         { id: "noticias", label: "Noticias", normalKey: "basenot",     perfilKey: "basenotb", isDefault: true },
@@ -38,6 +38,7 @@ const MYPST_USER_VARIANTS = {
     ],
     "FBanin": [
         { id: "exclusiva",    label: "Especial Banin", normalKey: "basebanin", perfilKey: "basebaninb", isDefault: true },
+        { id: "platina",      label: "Platina",      normalKey: "baseplatina", perfilKey: "imgTperf" },
         { id: "moderador",    label: "Moderador",    normalKey: "basemod",     perfilKey: "basemodb" }
     ],
     "MGZoio": [
@@ -58,7 +59,7 @@ const MYPST_SPECIAL_USERS = {
     "MGZoio":           { normalKey: "basered",      perfilKey: "baseredb" },
     "fabriciols":       { normalKey: "basered",      perfilKey: "baseredb" },
     "Toushi-san":       { normalKey: "basered",      perfilKey: "baseredb" },
-    "MamyBR":           { normalKey: "basered",      perfilKey: "baseredb" },
+    "MamyBR":           { normalKey: "basenot",      perfilKey: "baseredb" },
     "ZakJapa":          { normalKey: "basered",      perfilKey: "baseredb" },
     "GIBATSAN":         { normalKey: "basered",      perfilKey: "baseredb" },
     "Wesp_can":         { normalKey: "baseanalista", perfilKey: "baseanalistab" },
@@ -84,7 +85,7 @@ const MYPST_SPECIAL_USERS = {
 const MYPST_PLATINUM_IDS = [
     "EduNews", "SABBATH1979", "laddyvalentine", "bklautau",
     "Marcel_pfs1", "DaniloSouza84", "Hidra13", "SobrinhaYstranha",
-    "Ikaros-NEX", "dfop02"
+    "Ikaros-NEX", "dfop02", "FBanin"
 ];
 
 /**

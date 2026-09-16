@@ -59,8 +59,17 @@ class MypstDefaultRenderer extends BaseRenderer {
             ctx.font = '20px "Gemunu Libre"';
             ctx.textAlign = "center";
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(data.frase, 210, 472, 381);
+            ctx.fillText(data.frase || "Sic Parvis Magna", 210, 467, 381);
         }
+
+        if (data.usuarioDesde && data.usuarioNumero) {
+            ctx.font = '12px "Gemunu Libre"';
+            ctx.textAlign = "right";
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText( "#" + data.usuarioNumero + " - " + data.usuarioDesde,  400, 498, 381);
+        }
+
+
 
         const platNum   = Formatters.parseNumber(data.plat);
         const goldNum   = Formatters.parseNumber(data.gold);

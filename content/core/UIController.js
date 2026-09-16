@@ -158,7 +158,20 @@ class UIController {
             const ctx = canvas.getContext('2d');
             ctx.globalCompositeOperation = "source-over";
 
-            // 4. Renderiza o cartão no canvas
+            // 4. Garante que as fontes estejam carregadas antes de pintar no canvas
+            if (document.fonts) {
+                await Promise.all([
+                    document.fonts.load('40px "Gemunu Libre"').catch(() => {}),
+                    document.fonts.load('20px "Gemunu Libre"').catch(() => {}),
+                    document.fonts.load('30px "Work Sans"').catch(() => {}),
+                    document.fonts.load('20px "Orbitron"').catch(() => {}),
+                    document.fonts.load('20px "Courgette"').catch(() => {}),
+                    document.fonts.load('40px "Lobster"').catch(() => {})
+                ]);
+                await document.fonts.ready;
+            }
+
+            // 5. Renderiza o cartão no canvas
             await renderer.renderCard(data, ctx, canvas);
 
             // 5. Finalizado: oculta o spinner e exibe canvas e botão de download

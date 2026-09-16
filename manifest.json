@@ -83,5 +83,18 @@
       ],
       "run_at": "document_end"
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/fonts/*"],
+      "matches": [
+        "*://*.projectcard.com.br/*",
+        "*://*.psxtrophies.com.br/*",
+        "*://*.playstation.net/*",
+        "*://*.playstation.com/*",
+        "*://*.mypst.com.br/*",
+        "*://*.psnprofiles.com/*"
+      ]
+    }
   ]
 }

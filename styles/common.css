@@ -2,6 +2,65 @@
    styles/common.css — Estilos compartilhados da extensão projectcardEX
    ============================================================ */
 
+/* ============================================================
+   Fontes Locais da Extensão
+   ============================================================ */
+@font-face {
+  font-family: 'Gemunu Libre';
+  font-style: normal;
+  font-weight: 200 800;
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/GemunuLibre.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 400 900;
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/Orbitron.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Courgette';
+  font-style: normal;
+  font-weight: 400;
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/Courgette.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/Lobster.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 600;
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/Rajdhani-600.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 700;
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/Rajdhani-700.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 100 900;
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/WorkSans.woff2') format('woff2');
+  font-display: swap;
+}
+
 /* Modal Base */
 #psxt-card-modal {
   position: fixed;
@@ -29,7 +88,7 @@
 }
 
 .projectcardex-modal-content {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(177, 84, 169, 0.486);
   padding: 20px;
   border-radius: 10px;
   text-align: center;

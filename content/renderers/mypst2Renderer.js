@@ -48,6 +48,15 @@ class Mypst2Renderer extends BaseRenderer {
             });
         }
 
+        if (data.usuarioDesde && data.usuarioNumero) {
+            ctx.font = '12px "Gemunu Libre"';
+            ctx.textAlign = "right";
+            ctx.fillStyle =  '#000000',
+            ctx.fillText( "#" + data.usuarioNumero + " - " + data.usuarioDesde,  382, 451, 381);
+        }
+
+
+
         const platNum   = Formatters.parseNumber(data.plat);
         const goldNum   = Formatters.parseNumber(data.gold);
         const silverNum = Formatters.parseNumber(data.silver);
@@ -103,13 +112,13 @@ class Mypst2Renderer extends BaseRenderer {
 
         ctx.textAlign = 'center';
         const yBadges = 521;
-        if (data.mensal && data.mensal !== '0') ctx.fillText(data.mensal, 30, yBadges, 39);
-        if (data.semanal && data.semanal !== '0') ctx.fillText(data.semanal, 85, yBadges, 39);
-        if (data.guias && data.guias !== '0') ctx.fillText(data.guias, 140, yBadges, 39);
-        if (data.pioneiro && data.pioneiro !== '0') ctx.fillText(data.pioneiro, 195, yBadges, 39);
-        if (data.velocista && data.velocista !== '0') ctx.fillText(data.velocista, 249, yBadges, 39);
-        if (data.tartaruga && data.tartaruga !== '0') ctx.fillText(data.tartaruga, 306, yBadges, 39);
-        if (data.totalBadges && data.totalBadges !== '0') ctx.fillText(data.totalBadges, 361, yBadges, 39);
+        if (data.mensal && data.mensal) ctx.fillText(data.mensal, 30, yBadges, 39);
+        if (data.semanal && data.semanal) ctx.fillText(data.semanal, 85, yBadges, 39);
+        if (data.guias && data.guias) ctx.fillText(data.guias, 140, yBadges, 39);
+        if (data.pioneiro && data.pioneiro) ctx.fillText(data.pioneiro, 195, yBadges, 39);
+        if (data.velocista && data.velocista) ctx.fillText(data.velocista, 249, yBadges, 39);
+        if (data.tartaruga && data.tartaruga) ctx.fillText(data.tartaruga, 306, yBadges, 39);
+        if (data.totalBadges && data.totalBadges) ctx.fillText(data.totalBadges, 361, yBadges, 39);
 
         const nivelCalculado = LevelCalculator.calculateLevel(PSNPoints);
         const tier = LevelCalculator.getTierInfo(nivelCalculado);
