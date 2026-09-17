@@ -50,23 +50,15 @@ class PsnpExtractor extends BaseExtractor {
         }
 
         // --- TROFÉUS ---
-        // PSNProfiles usa uma lista de troféus com classes específicas por tipo.
-        // Estrutura: <ul class="profile-trophies"> <li class="platinum"> <span class="value">
+        // PSNProfiles estrutura: <li class="platinum"><span class="icon-sprite"></span> 173</li>
         const getTrophyValue = (typeClass) => {
-            // Seletores possíveis baseados na estrutura conhecida do PSNProfiles
-            const selectors = [
-                `li.${typeClass} .value`,
-                `li.${typeClass} span`,
-                `.trophy-count .${typeClass}`,
-                `div.${typeClass} span`,
-                `span.num-${typeClass}`
-            ];
-            for (const sel of selectors) {
-                const el = document.querySelector(sel);
-                if (el) {
-                    const val = (el.textContent || '').replace(/[^0-9]/g, '').trim();
-                    if (val) return val;
-                }
+            const el = document.querySelector(`#user-bar li.${typeClass}, ul.profile-bar li.${typeClass}, li.${typeClass}`);
+            if (el) {
+                const clone = el.cloneNode(true);
+                const icons = clone.querySelectorAll('.icon-sprite, img, svg');
+                icons.forEach(i => i.remove());
+                const val = (clone.textContent || '').replace(/[^0-9]/g, '').trim();
+                if (val) return val;
             }
             return '0';
         };
@@ -78,80 +70,95 @@ class PsnpExtractor extends BaseExtractor {
 
         // --- LEVEL ---
         let level = '0';
-        const levelSelectors = [
-            '.level',
-            '#bar-level .level',
-            'li.level',
-            '.psnp-bar .level',
-            'span.level-label'
-        ];
-        for (const sel of levelSelectors) {
-            const el = document.querySelector(sel);
-            if (el) {
-                const val = (el.textContent || '').replace(/[^0-9]/g, '').trim();
-                if (val) { level = val; break; }
+        const levelEl = document.querySelector('.level-box .flex.vertical span, .level-box span, #user-bar .level-box span');
+        if (levelEl) {
+            const val = (levelEl.textContent || '').replace(/[^0-9]/g, '').trim();
+            if (val) level = val;
+        }
+
+        // Fallback do level via meta tags
+        if (level === '0') {
+            const ogDesc = document.querySelector('meta[property="og:description"]');
+            if (ogDesc && ogDesc.content) {
+                const m = ogDesc.content.match(/Level\s+([0-9]+)/i);
+                if (m) level = m[1];
+            }
+        }
+        if (level === '0') {
+            const metaDesc = document.querySelector('meta[name="Description"]');
+            if (metaDesc && metaDesc.content) {
+                const m = metaDesc.content.match(/Level\s+([0-9]+)/i);
+                if (m) level = m[1];
             }
         }
 
-        // --- COMPLETION ---
-        let completudeGeral = '0';
-        const completionSelectors = [
-            '.completion-bar span',
-            '.completion span',
-            'li.completion span',
-            '.psnp-bar .completion'
-        ];
-        for (const sel of completionSelectors) {
-            const el = document.querySelector(sel);
-            if (el) {
-                const val = (el.textContent || '').replace(/[^0-9.,]/g, '').trim();
-                if (val) { completudeGeral = val; break; }
+        // --- ESTATÍSTICAS DA BARRA (.stats.flex) ---
+        // No PSNProfiles: <span class="stat grow">516<span>Games Played</span></span>
+        const statsMap = {};
+        document.querySelectorAll('.stats .stat, .stats .rank, .stats .country-rank').forEach(el => {
+            const labelEl = el.querySelector('span');
+            if (labelEl) {
+                const label = (labelEl.textContent || '').trim().toLowerCase();
+                const clone = el.cloneNode(true);
+                clone.querySelectorAll('span').forEach(s => s.remove());
+                const val = (clone.textContent || '').trim();
+                statsMap[label] = val;
             }
-        }
+        });
 
-        // --- GAMES PLAYED ---
+        // Total de jogos (Games Played)
         let totalJogos = '0';
-        const gamesSelectors = [
-            'li.games-played span',
-            '.games-played .value',
-            'li[data-type="games"] span',
-            'a[href*="/games"] span'
-        ];
-        for (const sel of gamesSelectors) {
-            const el = document.querySelector(sel);
-            if (el) {
-                const val = (el.textContent || '').replace(/[^0-9]/g, '').trim();
-                if (val) { totalJogos = val; break; }
-            }
+        if (statsMap['games played']) {
+            totalJogos = statsMap['games played'].replace(/[^0-9]/g, '').trim() || '0';
         }
 
-        // --- RANKING MUNDIAL ---
+        // Completude Geral (Completion) — remove % para permitir formatação pelo Renderer
+        let completudeGeral = '0';
+        if (statsMap['completion']) {
+            completudeGeral = statsMap['completion'].replace(/[^0-9.,]/g, '').trim() || '0';
+        }
+
+        // Troféus não conquistados (Unearned Trophies)
+        let unearned = '0';
+        if (statsMap['unearned trophies']) {
+            unearned = statsMap['unearned trophies'].replace(/[^0-9]/g, '').trim() || '0';
+        }
+
+        // Troféus por dia (Trophies Per Day)
+        let trofeusPorDia = '0';
+        if (statsMap['trophies per day']) {
+            trofeusPorDia = statsMap['trophies per day'].replace(/[^0-9.,]/g, '').trim() || '0';
+        }
+
+        // Ranking Mundial (World Rank)
         let rankingGeral = '0';
-        const worldRankSelectors = [
-            'li.world-rank span',
-            '.world-rank .rank',
-            'li[data-rank="world"] span'
-        ];
-        for (const sel of worldRankSelectors) {
-            const el = document.querySelector(sel);
-            if (el) {
-                const val = (el.textContent || '').replace(/[^0-9]/g, '').trim();
-                if (val) { rankingGeral = val; break; }
-            }
+        if (statsMap['world rank']) {
+            rankingGeral = statsMap['world rank'].replace(/[^0-9]/g, '').trim() || '0';
         }
 
-        // --- RANKING POR PAÍS ---
+        // Ranking Regional / País (Country Rank)
         let rankingRegional = '0';
-        const countryRankSelectors = [
-            'li.country-rank span',
-            '.country-rank .rank',
-            'li[data-rank="country"] span'
-        ];
-        for (const sel of countryRankSelectors) {
-            const el = document.querySelector(sel);
-            if (el) {
-                const val = (el.textContent || '').replace(/[^0-9]/g, '').trim();
-                if (val) { rankingRegional = val; break; }
+        if (statsMap['country rank']) {
+            rankingRegional = statsMap['country rank'].replace(/[^0-9]/g, '').trim() || '0';
+        }
+
+        // Fallback para estatísticas via meta Description caso não estejam no DOM
+        if (rankingGeral === '0' || rankingRegional === '0' || totalJogos === '0') {
+            const metaDesc = document.querySelector('meta[name="Description"]');
+            if (metaDesc && metaDesc.content) {
+                const desc = metaDesc.content;
+                if (rankingGeral === '0') {
+                    const m = desc.match(/World\s+Rank:\s*([0-9,]+)/i);
+                    if (m) rankingGeral = m[1].replace(/[^0-9]/g, '');
+                }
+                if (rankingRegional === '0') {
+                    const m = desc.match(/Country\s+Rank:\s*([0-9,]+)/i);
+                    if (m) rankingRegional = m[1].replace(/[^0-9]/g, '');
+                }
+                if (totalJogos === '0') {
+                    const m = desc.match(/([0-9,]+)\s+Games/i);
+                    if (m) totalJogos = m[1].replace(/[^0-9]/g, '');
+                }
             }
         }
 
@@ -178,36 +185,6 @@ class PsnpExtractor extends BaseExtractor {
         const rr = getRarityValue('rare');
         const uc = getRarityValue('uncommon');
         const cm = getRarityValue('common');
-
-        // --- UNEARNED ---
-        let unearned = '0';
-        const unearnedSelectors = [
-            '.unearned',
-            'li.unearned span',
-            'li[data-stat="unearned"] span'
-        ];
-        for (const sel of unearnedSelectors) {
-            const el = document.querySelector(sel);
-            if (el) {
-                const val = (el.textContent || '').replace(/[^0-9]/g, '').trim();
-                if (val) { unearned = val; break; }
-            }
-        }
-
-        // --- TROPHIES PER DAY ---
-        let trofeusPorDia = '0';
-        const tpdSelectors = [
-            'li.trophies-per-day span',
-            '.trophies-per-day .value',
-            'li[data-stat="trophies-per-day"] span'
-        ];
-        for (const sel of tpdSelectors) {
-            const el = document.querySelector(sel);
-            if (el) {
-                const val = (el.textContent || '').replace(/[^0-9.,]/g, '').trim();
-                if (val) { trofeusPorDia = val; break; }
-            }
-        }
 
         return {
             psnId,
