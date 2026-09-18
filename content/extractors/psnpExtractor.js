@@ -162,29 +162,56 @@ class PsnpExtractor extends BaseExtractor {
             }
         }
 
-        // --- RARITIES ---
-        const getRarityValue = (rarityClass) => {
-            const selectors = [
-                `.${rarityClass}-trophies`,
-                `.${rarityClass}-trophies span`,
-                `li[data-rarity="${rarityClass}"] span`,
-                `.trophy-rarity .${rarityClass}`
-            ];
-            for (const sel of selectors) {
-                const el = document.querySelector(sel);
-                if (el) {
-                    const val = (el.textContent || '').replace(/[^0-9]/g, '').trim();
-                    if (val) return val;
-                }
-            }
-            return '0';
-        };
+        // --- RARITIES (Ultra Rare, Very Rare, Rare, Uncommon, Common) ---
+        // PSNProfiles estrutura:
+        // <a href="...rarity=ultra-rare..."><center><span class="typo-top">105</span><br /><span class="typo-bottom">Ultra Rare</span></center></a>
+        let ur = '0', vr = '0', rr = '0', uc = '0', cm = '0';
 
-        const ur = getRarityValue('ultra-rare');
-        const vr = getRarityValue('very-rare');
-        const rr = getRarityValue('rare');
-        const uc = getRarityValue('uncommon');
-        const cm = getRarityValue('common');
+        const rarityLinks = document.querySelectorAll('a[href*="rarity="]');
+        rarityLinks.forEach(a => {
+            const valEl = a.querySelector('.typo-top');
+            const labelEl = a.querySelector('.typo-bottom');
+            if (!valEl) return;
+            const val = (valEl.textContent || '').replace(/[^0-9]/g, '').trim();
+            if (!val) return;
+
+            const href = (a.getAttribute('href') || '').toLowerCase();
+            const label = labelEl ? (labelEl.textContent || '').trim().toLowerCase() : '';
+
+            if (href.includes('rarity=ultra-rare') || label.includes('ultra rare')) {
+                ur = val;
+            } else if (href.includes('rarity=very-rare') || label.includes('very rare')) {
+                vr = val;
+            } else if (href.includes('rarity=rare') || label === 'rare') {
+                rr = val;
+            } else if (href.includes('rarity=uncommon') || label.includes('uncommon')) {
+                uc = val;
+            } else if (href.includes('rarity=common') || label.includes('common')) {
+                cm = val;
+            }
+        });
+
+        // Fallbacks adicionais caso a estrutura mude ligeiramente
+        if (ur === '0') {
+            const el = document.querySelector('a[href*="ultra-rare"] .typo-top, .ultra-rare-trophies, [data-rarity="ultra-rare"]');
+            if (el) ur = (el.textContent || '').replace(/[^0-9]/g, '').trim() || '0';
+        }
+        if (vr === '0') {
+            const el = document.querySelector('a[href*="very-rare"] .typo-top, .very-rare-trophies, [data-rarity="very-rare"]');
+            if (el) vr = (el.textContent || '').replace(/[^0-9]/g, '').trim() || '0';
+        }
+        if (rr === '0') {
+            const el = document.querySelector('a[href*="rarity=rare&"] .typo-top, a[href$="rarity=rare"] .typo-top, .rare-trophies, [data-rarity="rare"]');
+            if (el) rr = (el.textContent || '').replace(/[^0-9]/g, '').trim() || '0';
+        }
+        if (uc === '0') {
+            const el = document.querySelector('a[href*="uncommon"] .typo-top, .uncommon-trophies, [data-rarity="uncommon"]');
+            if (el) uc = (el.textContent || '').replace(/[^0-9]/g, '').trim() || '0';
+        }
+        if (cm === '0') {
+            const el = document.querySelector('a[href*="rarity=common"] .typo-top, .common-trophies, [data-rarity="common"]');
+            if (el) cm = (el.textContent || '').replace(/[^0-9]/g, '').trim() || '0';
+        }
 
         return {
             psnId,
