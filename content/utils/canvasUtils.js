@@ -35,6 +35,43 @@ class CanvasUtils {
         }
         ctx.restore();
     }
+
+    /**
+     * Desenha um texto curvo em arco circular, centralizado no topo do raio.
+     * @param {CanvasRenderingContext2D} ctx - Contexto 2D do Canvas.
+     * @param {Object} options
+     * @param {string} options.text - Texto a ser desenhado.
+     * @param {number} options.cx - Ponto central X do arco.
+     * @param {number} options.cy - Ponto central Y do arco.
+     * @param {number} options.radius - Raio do arco.
+     * @param {string} [options.font] - Fonte CSS opcional.
+     * @param {string} [options.fillStyle] - Cor do texto opcional.
+     */
+    static drawCurvedText(ctx, { text, cx, cy, radius, font, fillStyle } = {}) {
+        if (!text) return;
+        ctx.save();
+        if (font) ctx.font = font;
+        if (fillStyle) ctx.fillStyle = fillStyle;
+        ctx.textAlign = 'center';
+
+        ctx.translate(cx, cy);
+        let anguloTotal = 0;
+        for (let i = 0; i < text.length; i++) {
+            anguloTotal += ctx.measureText(text[i]).width / radius;
+        }
+        ctx.rotate(-anguloTotal / 2);
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const anguloChar = ctx.measureText(char).width / radius;
+            ctx.rotate(anguloChar / 2);
+            ctx.save();
+            ctx.translate(0, -radius);
+            ctx.fillText(char, 0, 0);
+            ctx.restore();
+            ctx.rotate(anguloChar / 2);
+        }
+        ctx.restore();
+    }
 }
 
 if (typeof globalThis !== 'undefined') {

@@ -171,7 +171,11 @@ class UIController {
                     document.fonts.load('30px "Work Sans"').catch(() => {}),
                     document.fonts.load('20px "Orbitron"').catch(() => {}),
                     document.fonts.load('20px "Courgette"').catch(() => {}),
-                    document.fonts.load('40px "Lobster"').catch(() => {})
+                    document.fonts.load('40px "Lobster"').catch(() => {}),
+                    document.fonts.load('40px "Lobster Two"').catch(() => {}),
+                    document.fonts.load('bold 30px "Lobster Two"').catch(() => {}),
+                    document.fonts.load('bold 20px "Lobster Two"').catch(() => {}),
+                    document.fonts.load('16px "Inter Tight"').catch(() => {})
                 ]);
                 await document.fonts.ready;
             }

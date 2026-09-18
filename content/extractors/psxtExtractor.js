@@ -86,6 +86,11 @@ class PsxtExtractor extends BaseExtractor {
         const pioneiro = getExtra('Pioneiro');
         const dicas = getExtra('Dicas Postadas');
         const likes = getExtra('Total de curtidas em dicas');
+        let horasJogadas = getExtra('Horas Jogadas') || getExtra('Horas jogadas') || getExtra('Total de horas jogadas') || getExtra('Total de Horas Jogadas') || getExtra('Horas');
+        if (!horasJogadas || horasJogadas === '0') {
+            const horasDiv = document.querySelector('div[title*="ora"] span, div[title*="ORA"] span');
+            if (horasDiv) horasJogadas = (horasDiv.innerText || horasDiv.textContent || '0').trim();
+        }
 
         // --- LEVEL ---
         let level = '0';
@@ -183,6 +188,7 @@ class PsxtExtractor extends BaseExtractor {
             pioneiro: pioneiro || '0',
             dicas: dicas || '0',
             likes: likes || '0',
+            horasJogadas: horasJogadas || '0',
             trofeusPorDia: trofeusPorDia || '0',
             totalJogos: totalJogos || '0',
             platinasRaras: Array.isArray(platinasRaras) ? platinasRaras : []

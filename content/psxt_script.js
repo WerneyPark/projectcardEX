@@ -26,6 +26,37 @@ uiController.registerRenderer(
     'Gerar Cartão PSN Legends'
 );
 
+// Atualiza renderers especiais baseados no perfil atual (ex: grupo Harém das Galas)
+function updateSpecialRenderers() {
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const currentPsnId = (pathParts.length > 0 && !['rankings', 'ranking', 'jogos', 'guias', 'noticias', 'insignias', 'feed', 'membros', 'faq'].includes(pathParts[0].toLowerCase()))
+        ? pathParts[0].trim()
+        : '';
+
+    if (typeof isPsxtHaremMember === 'function' && isPsxtHaremMember(currentPsnId)) {
+        if (!uiController.renderers['harem_galas']) {
+            uiController.registerRenderer(
+                'harem_galas',
+                new HaremGalasRenderer(),
+                'https://projectcard.com.br/img/icons/galasLogo64.png',
+                'Gerar Cartão Harém das Galas'
+            );
+            const existingModal = document.querySelector('.projectcardex-modal');
+            if (existingModal && !existingModal.querySelector('img[title="Gerar Cartão Harém das Galas"]')) {
+                existingModal.remove();
+            }
+        }
+    } else {
+        if (uiController.renderers['harem_galas']) {
+            delete uiController.renderers['harem_galas'];
+            const existingModal = document.querySelector('.projectcardex-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+        }
+    }
+}
+
 // O código abaixo lida com configurações que já existiam (dark mode, hide ads)
 chrome.storage.local.get(['darkMode', 'hideAds'], (result) => {
     if (result.darkMode) document.body.classList.add('psxt-dark-mode');
@@ -42,4 +73,7 @@ chrome.storage.onChanged.addListener((changes) => {
 });
 
 // Inicializa a UI periodicamente caso a página mude (SPA)
-setInterval(() => uiController.injectUI(), 1500);
+setInterval(() => {
+    updateSpecialRenderers();
+    uiController.injectUI();
+}, 1500);

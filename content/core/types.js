@@ -18,6 +18,7 @@
  * @property {string} pioneiro - Quantidade de distintivos "Pioneiro" ou similar.
  * @property {string} dicas - Total de dicas postadas na plataforma.
  * @property {string} likes - Total de curtidas recebidas nas dicas.
+ * @property {string} [horasJogadas] - Total de horas jogadas (quando disponível).
  */
 
 // Este arquivo serve apenas como referência de tipagem via JSDoc.

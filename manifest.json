@@ -23,6 +23,7 @@
       "matches": ["*://*.psxtrophies.com.br/*"],
       "js": [
         "content/config/assets.js",
+        "content/config/psxtSpecialGroups.js",
         "content/utils/levelCalculator.js",
         "content/utils/formatters.js",
         "content/utils/canvasUtils.js",
@@ -33,6 +34,7 @@
         "content/renderers/psxtDefaultRenderer.js",
         "content/renderers/pggRenderer.js",
         "content/renderers/psnlRenderer.js",
+        "content/renderers/haremGalasRenderer.js",
         "content/psxt_script.js"
       ],
       "css": [
