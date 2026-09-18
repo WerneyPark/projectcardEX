@@ -3,7 +3,7 @@
    Tema escuro-azul — compatível com o design do PSNProfiles
    ============================================================ */
 
-/* Variação do Modal para PSNProfiles */
+/* Variação do Modal para PSNProfiles 
 .psxt-modal-content {
   background-color: #1a1a2e;
   border: 1px solid #3d3d5c;
@@ -22,21 +22,33 @@
 .psxt-modal-close {
   color: #aaaacc;
 }
-
+*/
 /* Tema Específico do Botão PSNProfiles */
 .psxt-card-btn {
-  background: linear-gradient(90deg, #1a1a8c, #3eb1e8);
+  background: linear-gradient(90deg, #da4b9a, #3eb1e8);
   border: 1px solid #3d3d8c;
   box-shadow: 0 0 20px rgba(62, 177, 232, 0.4);
 }
 
 /* Tema Específico da Seção PSNProfiles */
 .projectcardex-modal {
-  background: linear-gradient(to right top, #0f0f2d, #1a1a5c, #252580);
-  border: 1px solid #2a2a6e;
+  background: linear-gradient(to right top, #74286e, #632a6e, #512b6b, #3f2b67, #2c2a62);
+  border: 1px solid #6e2a68;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  width: fit-content;
+  margin: 8px 0 8px auto;
+  padding: 6px 14px;
+  align-items: center;
 }
 
 .projectcardex-title {
   color: #8888cc;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-align: center;
 }
+
+.projectcardex-container {
+  justify-content: center;
+}
+

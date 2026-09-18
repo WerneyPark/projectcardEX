@@ -5,14 +5,14 @@
 
 /* Tema Específico do Botão MyPST */
 .psxt-card-btn {
-  background: linear-gradient(90deg, #235bc2, #3eb1e8);
+  background: linear-gradient(90deg, #da4b9a, #3eb1e8);
   box-shadow: 0 0 20px rgba(35, 91, 194, 0.4);
 }
 
 /* Tema Específico da Seção MyPST (Barra Lateral Direita) */
 .projectcardex-modal {
-  background: linear-gradient(to right, #1a3d80, #235bc2);
-  border: 1px solid #0f2d6b;
+  background: linear-gradient(to right top, #74286e, #632a6e, #512b6b, #3f2b67, #2c2a62);
+  border: 1px solid #680f6b;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   max-width: 253px;
   width: 100%;
