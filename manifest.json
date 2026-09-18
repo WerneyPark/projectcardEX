@@ -3,7 +3,6 @@
   "name": "projectcardEX",
   "version": "1.0.0",
   "description": "Extensão para customização e geração de cartões no PSXTrophies, MyPST e PSNProfiles",
-  "permissions": ["storage"],
   "host_permissions": [
     "*://*.projectcard.com.br/*",
     "*://*.psxtrophies.com.br/*",

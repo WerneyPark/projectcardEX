@@ -57,21 +57,6 @@ function updateSpecialRenderers() {
     }
 }
 
-// O código abaixo lida com configurações que já existiam (dark mode, hide ads)
-chrome.storage.local.get(['darkMode', 'hideAds'], (result) => {
-    if (result.darkMode) document.body.classList.add('psxt-dark-mode');
-    if (result.hideAds) document.body.classList.add('psxt-hide-ads');
-});
-
-chrome.storage.onChanged.addListener((changes) => {
-    if (changes.darkMode) {
-        document.body.classList.toggle('psxt-dark-mode', changes.darkMode.newValue);
-    }
-    if (changes.hideAds) {
-        document.body.classList.toggle('psxt-hide-ads', changes.hideAds.newValue);
-    }
-});
-
 // Inicializa a UI periodicamente caso a página mude (SPA)
 setInterval(() => {
     updateSpecialRenderers();

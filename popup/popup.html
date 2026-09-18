@@ -1,24 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
+  <title>Project Card EX</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h3>PSXT+</h3>
-  
-  <div class="setting-item">
-    <label>
-      <input type="checkbox" id="darkModeToggle"> Modo Escuro
-    </label>
-  </div>
-  
-  <div class="setting-item">
-    <label>
-      <input type="checkbox" id="hideAdsToggle"> Ocultar Anúncios
-    </label>
-  </div>
+  <header class="popup-header">
+    <div class="title-row">
+      <h2>Project Card <span class="accent">EX</span></h2>
+      <span class="version-badge">v1.0.0</span>
+    </div>
+    <p class="subtitle">Gerador de cartões de perfil para caçadores de troféus PlayStation.</p>
+  </header>
 
+  <section class="popup-content">
+    <div class="status-box">
+      <span class="status-indicator"></span>
+      <span class="status-text">Extensão ativa</span>
+    </div>
+
+    <div class="sites-section">
+      <h3>Sites Suportados</h3>
+      <ul class="sites-list">
+        <li>
+          <strong>PSX Trophies</strong>
+          <span>psxtrophies.com.br</span>
+        </li>
+        <li>
+          <strong>MyPST</strong>
+          <span>mypst.com.br</span>
+        </li>
+        <li>
+          <strong>PSNProfiles</strong>
+          <span>psnprofiles.com</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="info-note">
+      <p>Acesse o perfil de um jogador em qualquer um dos sites suportados para gerar os cartões personalizados.</p>
+    </div>
+  </section>
+
+  <footer class="popup-footer">
+    <a href="https://projectcard.com.br" target="_blank" rel="noopener noreferrer">projectcard.com.br</a>
+  </footer>
   <script src="popup.js"></script>
 </body>
 </html>

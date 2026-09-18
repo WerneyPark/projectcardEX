@@ -2,48 +2,6 @@
    psxt_styles.css — Estilos específicos para o PSX Trophies
    ============================================================ */
 
-/* Modo Escuro */
-body.psxt-dark-mode {
-  background-color: #121212 !important;
-  color: #e0e0e0 !important;
-}
-
-body.psxt-dark-mode * {
-  border-color: #333 !important;
-}
-
-body.psxt-dark-mode .layout_background__LYKsT,
-body.psxt-dark-mode .desktop_perfil__fXx0j aside,
-body.psxt-dark-mode .desktop_perfil__fXx0j main {
-  background-color: #1a1a1a !important;
-}
-
-body.psxt-dark-mode span, 
-body.psxt-dark-mode h1, 
-body.psxt-dark-mode h2, 
-body.psxt-dark-mode h3, 
-body.psxt-dark-mode h4,
-body.psxt-dark-mode div {
-  color: #e0e0e0 !important;
-}
-
-body.psxt-dark-mode .psxt-modal-content {
-  background-color: #222;
-  color: #eee;
-  border-color: #444;
-}
-
-body.psxt-dark-mode .psxt-modal-close:hover {
-  color: #fff;
-}
-
-/* Ocultar Anúncios */
-body.psxt-hide-ads .adsbygoogle, 
-body.psxt-hide-ads iframe[src*="ads"],
-body.psxt-hide-ads aside div[style*="width:240px"] {
-  display: none !important;
-}
-
 /* Tema Específico do Botão PSXT */
 .psxt-card-btn {
   background: linear-gradient(90deg, #da4b9a, #3eb1e8);
