@@ -168,7 +168,7 @@ class UIController {
                 await Promise.all([
                     document.fonts.load('40px "Gemunu Libre"').catch(() => {}),
                     document.fonts.load('20px "Gemunu Libre"').catch(() => {}),
-                    document.fonts.load('30px "Work Sans"').catch(() => {}),
+                    document.fonts.load('30px "ProjectCardWorkSans"').catch(() => {}),
                     document.fonts.load('20px "Orbitron"').catch(() => {}),
                     document.fonts.load('20px "Courgette"').catch(() => {}),
                     document.fonts.load('40px "Lobster"').catch(() => {}),

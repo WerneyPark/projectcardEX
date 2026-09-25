@@ -54,7 +54,7 @@
 }
 
 @font-face {
-  font-family: 'Work Sans';
+  font-family: 'ProjectCardWorkSans';
   font-style: normal;
   font-weight: 100 900;
   src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/WorkSans.woff2') format('woff2');

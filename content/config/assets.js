@@ -31,11 +31,24 @@ const EXTENSION_ICONS = {
     defaultCard: "https://projectcard.com.br/img/ALFA/projectcard.png"
 };
 
+const MYPST2_VARIANTS_ASSETS = {
+    azul: {
+        fundo: "https://projectcard.com.br/img/ALFA/basealfamypst2.png",
+        borda: "https://projectcard.com.br/img/ALFA/imgperfbordamypst22.png"
+    },
+    dark: {
+        fundo: "https://projectcard.com.br/img/ALFA/basealfamypst2preto.png",
+        borda: "https://projectcard.com.br/img/ALFA/imgperfbordamypst2preta.png"
+    }
+};
+
 if (typeof globalThis !== 'undefined') {
     globalThis.PSN_LEVEL_ASSETS = PSN_LEVEL_ASSETS;
     globalThis.EXTENSION_ICONS = EXTENSION_ICONS;
+    globalThis.MYPST2_VARIANTS_ASSETS = MYPST2_VARIANTS_ASSETS;
 }
 if (typeof window !== 'undefined') {
     window.PSN_LEVEL_ASSETS = PSN_LEVEL_ASSETS;
     window.EXTENSION_ICONS = EXTENSION_ICONS;
+    window.MYPST2_VARIANTS_ASSETS = MYPST2_VARIANTS_ASSETS;
 }

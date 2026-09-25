@@ -18,3 +18,12 @@
 .projectcardex-title {
   color: #888;
 }
+
+/* Proteção de legibilidade dos marcos do perfil */
+.desktop_general-milestones__4DxL4 h1,
+.desktop_general-milestones__4DxL4 h2,
+.desktop_general-milestones__4DxL4 h3,
+.desktop_general-milestones__4DxL4 span {
+  font-weight: 400 !important;
+  color: #c8c8c8 !important;
+}

@@ -20,7 +20,7 @@ class PsxtDefaultRenderer extends BaseRenderer {
         ctx.drawImage(images.imgBordapsxt, 0, 0);
 
         if (data.psnId) {
-            ctx.font = '30px "Work Sans", sans-serif'; 
+            ctx.font = '30px "ProjectCardWorkSans", sans-serif'; 
             ctx.textAlign = "center";
             ctx.fillStyle = '#FFFFFF';
             ctx.fillText(data.psnId, 170, 363, 308);
@@ -34,7 +34,7 @@ class PsxtDefaultRenderer extends BaseRenderer {
         const tTotal = platina2 + ouro2 + prata2 + bronze2;
         const PSNPoints = LevelCalculator.calculatePoints(platina2, ouro2, prata2, bronze2);
 
-        ctx.font = '20px "Work Sans", sans-serif';
+        ctx.font = '20px "ProjectCardWorkSans", sans-serif';
         ctx.textAlign = 'right';
         ctx.fillStyle = '#000000';
         if (data.plat) ctx.fillText(Formatters.formatNumber(platina2), 54, 592, 40);
@@ -45,7 +45,7 @@ class PsxtDefaultRenderer extends BaseRenderer {
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(Formatters.formatNumber(tTotal), 372, 592, 51);
 
-        ctx.font = '15px "Work Sans", sans-serif';
+        ctx.font = '15px "ProjectCardWorkSans", sans-serif';
         ctx.fillText(Formatters.formatNumber(PSNPoints), 316, 421, 105);
 
         const ph = Number(String(data.pontosPH || 0).replace(/\./g, "").replace(",", ".")) || 0;
@@ -60,7 +60,7 @@ class PsxtDefaultRenderer extends BaseRenderer {
         if (data.completudeGeral) ctx.fillText(`${data.completudeGeral}%`, 316, 498, 105);
         if (data.completudePlatina) ctx.fillText(`${data.completudePlatina}%`, 316, 517, 105);
 
-        ctx.font = '20px "Work Sans", sans-serif';
+        ctx.font = '20px "ProjectCardWorkSans", sans-serif';
         ctx.textAlign = 'center';
         
         const vl = Number(data.velocista) || 0;
@@ -80,11 +80,11 @@ class PsxtDefaultRenderer extends BaseRenderer {
 
         if (iconLevel) {
             ctx.drawImage(iconLevel, 343, 333, 60, 60);
-            ctx.font = '22px "Work Sans", sans-serif';
+            ctx.font = '22px "ProjectCardWorkSans", sans-serif';
             ctx.textAlign = 'center';
             ctx.fillStyle = '#FFFFFF';
             ctx.fillText(nivelCalculado, 373, 413, 55);
-            ctx.font = '15px "Work Sans", sans-serif';
+            ctx.font = '15px "ProjectCardWorkSans", sans-serif';
             ctx.fillText(textLevelName, 373, 434, 55); 
         }
 
@@ -94,7 +94,7 @@ class PsxtDefaultRenderer extends BaseRenderer {
             x: 411,
             y: 175,
             angleDeg: -90,
-            font: '18px "Work Sans", sans-serif',
+            font: '18px "ProjectCardWorkSans", sans-serif',
             fillStyle: '#FFFFFF',
             textAlign: 'center'
         });

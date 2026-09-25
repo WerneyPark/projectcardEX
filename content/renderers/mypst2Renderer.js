@@ -1,11 +1,33 @@
 class Mypst2Renderer extends BaseRenderer {
-    async renderCard(data, ctx, canvas) {
+    /**
+     * Retorna as variantes disponíveis para o Modelo 2 do MyPST.
+     * Disponível para todos os usuários: Azul e Dark/Preto.
+     * @param {string} psnId
+     * @returns {Array<{ id: string, label: string, isDefault?: boolean }>}
+     */
+    getAvailableVariants(psnId) {
+        return [
+            { id: "azul", label: "Azul", isDefault: true },
+            { id: "dark", label: "Dark", isDefault: false }
+        ];
+    }
+
+    async renderCard(data, ctx, canvas, options = {}) {
         canvas.width = 395;
         canvas.height = 566;
 
+        const variantId = options?.variantId || 'azul';
+        const isDark = variantId === 'dark' || variantId === 'preto';
+
         const imageSources = {
-            imgFundo: "https://projectcard.com.br/img/ALFA/basealfamypst2.png",
-            imgBorda: "https://projectcard.com.br/img/ALFA/imgperfbordamypst22.png",
+            imgFundoAzul: (typeof MYPST2_VARIANTS_ASSETS !== 'undefined' && MYPST2_VARIANTS_ASSETS.azul?.fundo)
+                || "https://projectcard.com.br/img/ALFA/basealfamypst2.png",
+            imgBordaAzul: (typeof MYPST2_VARIANTS_ASSETS !== 'undefined' && MYPST2_VARIANTS_ASSETS.azul?.borda)
+                || "https://projectcard.com.br/img/ALFA/imgperfbordamypst22.png",
+            imgFundoDark: (typeof MYPST2_VARIANTS_ASSETS !== 'undefined' && MYPST2_VARIANTS_ASSETS.dark?.fundo)
+                || "https://projectcard.com.br/img/ALFA/basealfamypst2preto.png",
+            imgBordaDark: (typeof MYPST2_VARIANTS_ASSETS !== 'undefined' && MYPST2_VARIANTS_ASSETS.dark?.borda)
+                || "https://projectcard.com.br/img/ALFA/imgperfbordamypst2preta.png",
             ...(typeof PSN_LEVEL_ASSETS !== 'undefined' ? PSN_LEVEL_ASSETS : {})
         };
 
@@ -17,11 +39,14 @@ class Mypst2Renderer extends BaseRenderer {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        if (images.imgFundo) ctx.drawImage(images.imgFundo, 0, 0);
+        const imgFundo = isDark ? images.imgFundoDark : images.imgFundoAzul;
+        const imgBorda = isDark ? images.imgBordaDark : images.imgBordaAzul;
+
+        if (imgFundo) ctx.drawImage(imgFundo, 0, 0);
 
         if (images.avatar) {
             ctx.drawImage(images.avatar, 26, 71, 274, 274);
-            if (images.imgBorda) ctx.drawImage(images.imgBorda, 0, 0);
+            if (imgBorda) ctx.drawImage(imgBorda, 0, 0);
         }
 
         if (images.pplat) {
@@ -42,7 +67,7 @@ class Mypst2Renderer extends BaseRenderer {
                 y: 206,
                 angleDeg: -90,
                 font: '25px "Gemunu Libre"',
-                fillStyle: '#000000',
+                fillStyle: isDark ? '#ffffff' : '#000000',
                 textAlign: 'center',
                 maxWidth: 263
             });
@@ -51,7 +76,7 @@ class Mypst2Renderer extends BaseRenderer {
         if (data.usuarioDesde && data.usuarioNumero) {
             ctx.font = '12px "Gemunu Libre"';
             ctx.textAlign = "right";
-            ctx.fillStyle =  '#000000',
+            ctx.fillStyle = isDark ? '#ffffff' : '#000000';
             ctx.fillText( "#" + data.usuarioNumero + " - " + data.usuarioDesde,  382, 451, 381);
         }
 
@@ -131,7 +156,7 @@ class Mypst2Renderer extends BaseRenderer {
         const datageracao = Formatters.formatGenerationDate();
         ctx.font = '20px "Gemunu Libre"';
         ctx.textAlign = 'left';
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = isDark ? '#ffffff' : '#000000';
         ctx.fillText(datageracao, 25, 361);
     }
 }
