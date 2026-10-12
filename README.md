@@ -3,9 +3,11 @@
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue?style=flat-square)
 ![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-brightgreen?style=flat-square)
 ![Platform](https://img.shields.io/badge/Plataforma-PlayStation%20Trophies-003791?style=flat-square)
-![License](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow?style=flat-square)
+[![License](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow?style=flat-square)](LICENSE)
 
-Extensão para navegadores baseados em Chromium (Google Chrome, Brave, Edge, Opera) que injeta ferramentas e geradores de **Cartões de Troféus (Gamer Cards)** diretamente em páginas de perfis dos principais sites da comunidade PlayStation: **PSX Trophies**, **MyPST** e **PSNProfiles**.
+**projectcardEX** é uma extensão modular para navegadores baseados em Chromium (Google Chrome, Brave, Edge, Opera) desenvolvida para a comunidade de caçadores de troféus PlayStation. 
+
+O projeto reúne uma suíte integrada de ferramentas que engloba a geração de **Cartões de Jogador (Gamer Cards)** via HTML5 Canvas, **Linha do Tempo e Splits de Conquista** em tempo real, um **Módulo Completo Anti-Cheat & Auditoria de Troféus** (com verificação automatizada, regras personalizadas e denúncias com impressão A4/PDF) e uma **Central de Controle (Popup Menu)** com gerenciamento local e backup via JSON.
 
 ---
 
@@ -13,163 +15,195 @@ Extensão para navegadores baseados em Chromium (Google Chrome, Brave, Edge, Ope
 
 - [projectcardEX 🎮🏆](#projectcardex-)
   - [📋 Sumário](#-sumário)
-  - [🎯 Visão Geral](#-visão-geral)
-  - [✨ Funcionalidades](#-funcionalidades)
+  - [🎯 Visão Geral do Sistema](#-visão-geral-do-sistema)
+  - [✨ Pilares e Funcionalidades](#-pilares-e-funcionalidades)
+    - [1. 🎨 Gerador de Gamer Cards (Canvas 2D)](#1--gerador-de-gamer-cards-canvas-2d)
+    - [2. ⏱️ Linha do Tempo e Splits de Conquista (Trophy Timeline)](#2-️-linha-do-tempo-e-splits-de-conquista-trophy-timeline)
+    - [3. 🛡️ Módulo Anti-Cheat \& Auditoria de Troféus](#3-️-módulo-anti-cheat--auditoria-de-troféus)
+    - [4. ⚙️ Central de Controle da Extensão (Popup Menu)](#4-️-central-de-controle-da-extensão-popup-menu)
   - [🃏 Modelos de Cartões Suportados](#-modelos-de-cartões-suportados)
-  - [🚀 Como Baixar e Instalar no Google Chrome](#-como-baixar-e-instalar-no-google-chrome)
-    - [Passo 1: Obter os arquivos](#passo-1-obter-os-arquivos)
-      - [Opção A: Baixar como arquivo ZIP (Mais simples)](#opção-a-baixar-como-arquivo-zip-mais-simples)
-      - [Opção B: Clonar via Git (Para desenvolvedores)](#opção-b-clonar-via-git-para-desenvolvedores)
-    - [Passo 2: Ativar o Modo do Desenvolvedor](#passo-2-ativar-o-modo-do-desenvolvedor)
-    - [Passo 3: Carregar a Extensão](#passo-3-carregar-a-extensão)
-    - [Passo 4: Fixar na Barra de Ferramentas](#passo-4-fixar-na-barra-de-ferramentas)
+  - [🔒 Privacidade e Segurança (Privacy-First)](#-privacidade-e-segurança-privacy-first)
+  - [📁 Estrutura e Arquitetura do Projeto](#-estrutura-e-arquitetura-do-projeto)
+  - [🧪 Engenharia de Qualidade e Testes Automatizados](#-engenharia-de-qualidade-e-testes-automatizados)
+  - [🚀 Como Instalar no Google Chrome](#-como-instalar-no-google-chrome)
   - [🔄 Como Atualizar a Extensão](#-como-atualizar-a-extensão)
-  - [🕹️ Como Utilizar](#️-como-utilizar)
-  - [📁 Estrutura do Projeto](#-estrutura-do-projeto)
   - [🌐 Compatibilidade](#-compatibilidade)
   - [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
   - [🤝 Contribuição](#-contribuição)
   - [📄 Licença](#-licença)
-  - [Contato](#contato)
 
 ---
 
-## 🎯 Visão Geral
+## 🎯 Visão Geral do Sistema
 
-O **projectcardEX** foi desenvolvido para a comunidade de caçadores de troféus. A extensão captura as informações públicas do jogador e desenha em tempo real um cartão estilizado em HTML5 Canvas, pronto para ser compartilhado em redes sociais, fóruns ou guardado como lembrança.
+O **projectcardEX** atua nos principais portais da comunidade PlayStation brasileira e internacional: **PSX Trophies** (`psxtrophies.com.br`), **MyPST** (`mypst.com.br`) e **PSNProfiles** (`psnprofiles.com`). 
+
+Projetado sob a arquitetura **Manifest V3**, o sistema opera de forma não-intrusiva, enriquecendo as páginas de perfil e páginas individuais de troféus sem comprometer o desempenho original do portal.
 
 ---
 
-## ✨ Funcionalidades
+## ✨ Pilares e Funcionalidades
 
-- **Renderização via Canvas**: Gera imagens nítidas diretamente no navegador, sem necessidade de servidores externos para montagem.
-- **Múltiplos Modelos de Cartão**: Vários designs clássicos e modernos inspirados nas comunidades mais conhecidas.
-- **Injeção Automática e Não-Intrusiva**: Botões integrados diretamente na interface dos sites de perfil.
-- **Modal de Pré-visualização**: Veja o cartão antes de salvar, com botões para **Baixar PNG** ou **Copiar Imagem** para a área de transferência.
-- **Tipografia Embutida**: Fontes pré-carregadas (`woff2`) garantindo renderização consistente em qualquer sistema operacional.
+### 1. 🎨 Gerador de Gamer Cards (Canvas 2D)
+- **Renderização Client-Side**: O navegador renderiza os cartões utilizando a API nativa do HTML5 Canvas, sem necessidade de servidores intermediários.
+- **Tipografia Embutida**: Fontes pré-carregadas (`.woff2`) asseguram tipografia idêntica em qualquer sistema operacional (Windows, macOS, Linux).
+- **Exportação Flexível**: Pré-visualização instantânea em modal com opções de **Baixar Imagem em PNG** em alta fidelidade ou **Copiar Imagem** para a área de transferência.
 
+### 2. ⏱️ Linha do Tempo e Splits de Conquista (Trophy Timeline)
+Injetado automaticamente na visualização de troféus de jogos do PSXT (`/:username/jogo/:gameSlug`):
+- **Tempo Total Decorrido ($T_0$)**: Mostra exatamente quanto tempo se passou desde o primeiro troféu conquistado até a platina/100%.
+- **Diferenças Parciais (Splits $+\Delta t$)**: Calcula e exibe o tempo decorrido em relação ao troféu imediatamente anterior na ordem cronológica.
+- **Tratamento de Simultaneidade**: Identifica troféus obtidos no mesmo segundo com a marcação `(+0 segundos)`.
+- **Destaque Inicial**: Marca com clareza visual o primeiro troféu conquistado pelo jogador na campanha.
+
+### 3. 🛡️ Módulo Anti-Cheat & Auditoria de Troféus
+Um ecossistema completo para preservar o *Fair Play* e auditar listas de troféus com tempos ou ordens tecnicamente inviáveis:
+- **Verificação Automatizada (Presets PSN100)**:
+  - Integra catálogo de regras clássicas adaptadas da comunidade internacional **PSN100** (*Ragowit/psn100*), cobrindo jogos notórios como *Resonance of Fate*, *FUEL*, *Lost Planet 2*, entre outros.
+  - Ativado por padrão com chave de desativação rápida.
+- **Criação de 3 Tipos de Regras Locais**:
+  - **Regra de Ordem**: Dispara o alerta *"esses troféus não costumam ser conquistados nessa ordem"* quando um troféu obrigatório antecede outro incompatível.
+  - **Regra de Tempo**: Define o tempo mínimo em segundos entre troféus, alertando *"esses troféus não costumam ser conquistados tão rápidos"*.
+  - **Regra de Referência (Genérica)**: Seleciona um troféu referência e define se ele deve vir obrigatoriamente *Primeiro* ou *Depois* em relação a um conjunto de troféus, alertando *"esse troféu costuma aparecer em outra ordem"*.
+- **Fluxo de Denúncia Manual & Relatório A4**:
+  - Botão integrado no cartão lateral (`<aside>`) abaixo da Nota do jogo (`[ ⚠️ Gerar Relatorio - Denuncia ]`).
+  - Modal interativo exigindo no mínimo 3 troféus selecionados e justificativa técnica detalhada.
+  - Emissão de folha de denúncia formatada para **Impressão A4 / Salvar em PDF** via `window.print()`, com cabeçalho formal, tabela destacada em ordem cronológica (sem número de ordem rígido) e lista completa de troféus deduplicada.
+  - Conversão imediata da denúncia em regra automatizada para o navegador do usuário.
+- **Alerta Visual e Resiliência**:
+  - Badge pulsante em gradiente vermelho (*"⚠️ Lista inconsistente"* ou *"⚠️ Troféus inconsistentes"*).
+  - Modal popover de detalhes listando os troféus envolvidos e datas.
+  - Sistema com auto-recuperação pós-renderização do DOM, parsing de datas resistente a tags `<br>` e proteção contra *race conditions*.
+
+### 4. ⚙️ Central de Controle da Extensão (Popup Menu)
+Interface moderna em tema *Dark Glassmorphism* (`480px × 560px`) estruturada em 4 abas:
+- 📊 **Início**: Dashboard com métricas em tempo real (Total de Regras salvas, Presets ativos, Relatórios emitidos), status dos domínios compatíveis e dicas de uso.
+- ⚖️ **Minhas Regras**: Gerenciador das regras locais com campo de busca instantânea, badges coloridos por categoria (*Ordem*, *Tempo* e *Referência*), exclusão com confirmação e botões de:
+  - **📤 Exportar**: Gera arquivo `.json` de backup de todas as regras.
+  - **📥 Importar**: Carrega arquivo `.json` com mesclagem inteligente (*merge*) sem duplicar IDs existentes.
+- 🌐 **Presets PSN100**: Chave seletora (*Toggle Switch*) e listagem das regras de auditoria predefinidas.
+- 📄 **Relatórios**: Histórico das denúncias salvas localmente com botão **🖨️ Reimprimir** em folha A4 instantânea.
 
 ---
 
 ## 🃏 Modelos de Cartões Suportados
 
-| Site | Modelos Disponíveis |
-| :--- | :--- |
-| **PSX Trophies** (`psxtrophies.com.br`) | • **PSXT Extra**<br>• **PG Games**<br>• **PSN Legends**<br>• **Harém das Galas** (exclusivo para membros) |
-| **MyPST** (`mypst.com.br`) | • **MyPST Classic**<br>• **MyPST New** |
-| **PSNProfiles** (`psnprofiles.com`) | • **PSNProfiles Custom Card** |
+| Portal | Modelos Disponíveis | Características |
+| :--- | :--- | :--- |
+| **PSX Trophies** (`psxtrophies.com.br`) | • **PSXT Extra**<br>• **PG Games**<br>• **PSN Legends**<br>• **Harém das Galas** | • Renders fiéis aos estilos clássicos e modernos.<br>• Modelo Harém exclusivo detectado dinamicamente para membros do grupo. |
+| **MyPST** (`mypst.com.br`) | • **MyPST Classic**<br>• **MyPST New** | • Cartões nostálgicos com visual característico da comunidade. |
+| **PSNProfiles** (`psnprofiles.com`) | • **PSNProfiles Custom Card** | • Layout horizontal compacto com avatar, nível PSN e badges de troféu. |
 
 ---
 
-## 🚀 Como Baixar e Instalar no Google Chrome
+## 🔒 Privacidade e Segurança (Privacy-First)
 
-Como esta é uma extensão em desenvolvimento (ainda não publicada na Chrome Web Store), a instalação é feita de forma simples e rápida utilizando o **Modo do Desenvolvedor** do navegador.
+O **projectcardEX** foi concebido sob princípios estritos de soberania de dados:
+- **Armazenamento 100% Local**: Todas as regras criadas e relatórios de denúncia emitidos ficam salvos exclusivamente no armazenamento do seu próprio navegador (`chrome.storage.local`).
+- **Zero Rastreamento**: Nenhuma informação de navegação, perfil ou denúncia é enviada para servidores externos ou bancos de dados remotos.
+- **Portabilidade Total**: Através dos botões **Exportar** e **Importar** na aba *Minhas Regras*, você possui total controle para fazer backup ou compartilhar suas regras em formato `.json` com quem desejar.
 
-### Passo 1: Obter os arquivos
+---
 
-Você pode obter os arquivos do projeto de duas maneiras:
+## 📁 Estrutura e Arquitetura do Projeto
 
-#### Opção A: Baixar como arquivo ZIP (Mais simples)
-1. No topo desta página do GitHub, clique no botão verde **Code** e selecione **Download ZIP**.
-2. Após o download, extraia o arquivo `.zip` em uma pasta de sua preferência no computador (exemplo: `C:\extensoes\projectcardEX` ou `Documentos/projectcardEX`).
-   > ⚠️ **Importante**: Não exclua nem mova essa pasta após a instalação, pois o Chrome continuará lendo os arquivos dela.
+O código-fonte é estritamente modular, desacoplando o núcleo de extração gráfica do motor de auditoria e da interface de controle:
 
-#### Opção B: Clonar via Git (Para desenvolvedores)
-Abra o terminal e execute:
-```bash
-git clone https://github.com/SEU-USUARIO/projectcardEX.git
+```text
+projectcardEX/
+├── assets/                          # Fontes e recursos gráficos estáticos
+│   └── fonts/                       # Arquivos WOFF2 embutidos
+├── content/                         # Scripts injetados (Content Scripts)
+│   ├── antiCheat/                   # 🛡️ Módulo Anti-Cheat & Auditoria
+│   │   ├── antiCheatEngine.js       # Motor lógico de validação de regras
+│   │   ├── antiCheatPresets.js      # Catálogo predefinido adaptado do PSN100
+│   │   ├── antiCheatPrintView.js    # Layout formal A4 para impressão/PDF
+│   │   ├── antiCheatReportModal.js  # Modal interativo de seleção de troféus e denúncia
+│   │   ├── antiCheatRuleModal.js    # Modal de criação de regras (Ordem, Tempo, Referência)
+│   │   ├── antiCheatStorage.js      # Camada de persistência local (chrome.storage)
+│   │   └── antiCheatUI.js           # Injetor no DOM, observador e badges de alerta
+│   ├── config/                      # Configurações de URLs, assets e grupos especiais
+│   ├── core/                        # Classes base (BaseExtractor, BaseRenderer, UIController)
+│   ├── extractors/                  # Scrapers de dados por portal (PSXT, MyPST, PSNP)
+│   ├── modules/                     # ⏱️ Módulos de gameplay (Trophy Timeline)
+│   │   └── trophyTimeline.js        # Cálculo de splits e tempo decorrido
+│   ├── renderers/                   # Renderizadores gráficos Canvas 2D
+│   ├── utils/                       # Calculadora de nível PSN, formatadores e datas
+│   ├── mypst_script.js              # Entrypoint de injeção no MyPST
+│   ├── psnp_script.js               # Entrypoint de injeção no PSNProfiles
+│   └── psxt_script.js               # Entrypoint de injeção no PSX Trophies
+├── popup/                           # ⚙️ Central de Controle (Menu da Extensão)
+│   ├── popup.html                   # Estrutura com as 4 abas interativas
+│   ├── popup.css                    # Design Dark Glassmorphism responsivo (480px)
+│   └── popup.js                     # Métricas, busca, exportação/importação e reimpressão
+├── styles/                          # Folhas de estilo injetadas nas páginas
+│   ├── common.css                   # Modais compartilhados e componentes base
+│   ├── antiCheat_styles.css         # Botão lateral, badges pulsantes e formulários de denúncia
+│   ├── psxt_styles.css              # Estilos específicos do PSXT
+│   ├── mypst_styles.css             # Estilos específicos do MyPST
+│   └── psnp_styles.css              # Estilos específicos do PSNProfiles
+├── tests/                           # 🧪 Suíte de Testes Automatizados (Node.js)
+│   ├── test_antiCheat.js            # Validação do motor, regras, storage e modal
+│   ├── test_trophy_timeline.js      # Validação do cálculo de tempo e splits
+│   └── test_popup.js                # Validação dos fluxos do menu popup e exportação
+├── background.js                    # Service Worker em background (MV3)
+├── manifest.json                    # Manifesto de permissões e content scripts
+└── README.md                        # Documentação do projeto
 ```
 
 ---
 
-### Passo 2: Ativar o Modo do Desenvolvedor
+## 🧪 Engenharia de Qualidade e Testes Automatizados
 
-1. Abra o **Google Chrome**.
-2. Na barra de endereços, digite:
-   ```text
-   chrome://extensions
-   ```
-   *(ou acesse pelo menu de 3 pontinhos no canto superior direito > **Extensões** > **Gerenciar extensões**)*.
-3. No canto superior direito da página de extensões, **ative a chave seletora "Modo do desenvolvedor"** (Developer mode).
+O projeto conta com uma suíte de testes unitários executável via Node.js, cobrindo o manifesto, motores lógicos, persistência, casos de borda e interfaces:
 
----
+```powershell
+# 1. Executar testes do Módulo Anti-Cheat, Motor e Regras
+node tests/test_antiCheat.js
 
-### Passo 3: Carregar a Extensão
+# 2. Executar testes da Linha do Tempo e Formatadores
+node tests/test_trophy_timeline.js
 
-1. Com o modo do desenvolvedor ativo, surgirão três novos botões no canto superior esquerdo.
-2. Clique no botão **"Carregar sem compactação"** (ou *Load unpacked* em inglês).
-3. Na janela de seleção de pastas, navegue até a pasta do projeto (a pasta onde está o arquivo `manifest.json`) e clique em **"Selecionar pasta"**.
-4. A extensão **projectcardEX** aparecerá listada entre as suas extensões ativas!
+# 3. Executar testes do Menu Popup e Fluxos de Backup
+node tests/test_popup.js
+```
+
+Todos os testes validam cenários reais como deduplicação de listas desktop/mobile, tolerância a tags `<br>` em datas, detecção de ordem impossível e integridade de exportação/importação em JSON.
 
 ---
 
-### Passo 4: Fixar na Barra de Ferramentas
+## 🚀 Como Instalar no Google Chrome
 
-1. Clique no ícone de **quebra-cabeça** (ícone de extensões) ao lado da barra de endereços do Chrome.
-2. Localize o **projectcardEX** e clique no ícone de **alfinete** para fixá-lo na barra superior para fácil acesso.
+1. **Baixe ou clone os arquivos**:
+   - Clique em **Code** > **Download ZIP** no GitHub e descompacte em uma pasta de sua escolha (ex: `C:\extensoes\projectcardEX`), ou clone via terminal:
+     ```bash
+     git clone https://github.com/SEU-USUARIO/projectcardEX.git
+     ```
+2. **Abra a tela de extensões**:
+   - No Chrome, acesse `chrome://extensions`.
+3. **Ative o Modo do Desenvolvedor**:
+   - Ative a chave seletora **"Modo do desenvolvedor"** no canto superior direito.
+4. **Carregue o projeto**:
+   - Clique em **"Carregar sem compactação"** (*Load unpacked*).
+   - Selecione a pasta raiz do projeto (onde está localizado o arquivo `manifest.json`).
+5. **Fixe na barra de ferramentas**:
+   - Clique no ícone de quebra-cabeça do navegador e fixe o **projectcardEX** com o ícone de alfinete para abrir o popup a qualquer momento.
 
 ---
 
 ## 🔄 Como Atualizar a Extensão
 
-Sempre que você baixar uma versão mais recente do código ou fizer alterações locais:
-
-1. Abra a página `chrome://extensions`.
+Sempre que efetuar alterações no código ou baixar atualizações:
+1. Acesse `chrome://extensions`.
 2. Localize o card do **projectcardEX**.
 3. Clique no botão de recarregar (ícone de **seta circular 🔄**).
-4. Recarregue a aba do site de troféus (F5) para ver as mudanças refletidas.
-
----
-
-## 🕹️ Como Utilizar
-
-1. Acesse seu perfil (ou de qualquer outro jogador) em um dos sites suportados:
-   - [PSX Trophies](https://psxtrophies.com.br)
-   - [MyPST](https://mypst.com.br)
-   - [PSNProfiles](https://psnprofiles.com)
-2. A extensão injetará automaticamente os botões dos modelos de cartões disponíveis na interface da página de perfil.
-3. Clique no modelo de cartão desejado.
-4. O modal do **projectcardEX** será aberto exibindo a prévia do cartão gerado:
-   - Clique em **"Baixar Imagem"** para salvar o arquivo `.png` no seu computador.
-   - Clique em **"Copiar"** para copiar a imagem diretamente para a área de transferência.
-
----
-
-## 📁 Estrutura do Projeto
-
-```text
-projectcardEX/
-├── assets/                  # Recursos estáticos
-│   └── fonts/               # Fontes WOFF2 utilizadas nos cartões
-├── content/                 # Scripts injetados nas páginas (Content Scripts)
-│   ├── config/              # Configurações de URLs, assets e grupos especiais
-│   ├── core/                # Classes base (BaseExtractor, BaseRenderer, UIController)
-│   ├── extractors/          # Lógica de extração de dados por site (PSXT, MyPST, PSNP)
-│   ├── renderers/           # Lógica de desenho Canvas para cada estilo de cartão
-│   ├── utils/               # Calculadora de nível PSN, formatadores e utilitários Canvas
-│   ├── mypst_script.js      # Entrypoint de injeção no MyPST
-│   ├── psnp_script.js       # Entrypoint de injeção no PSNProfiles
-│   └── psxt_script.js       # Entrypoint de injeção no PSX Trophies
-├── popup/                   # Interface do popup da extensão
-│   ├── popup.html
-│   ├── popup.css
-│   └── popup.js
-├── styles/                  # Estilos CSS injetados nas páginas
-│   ├── common.css           # Estilos do modal, botões e controles compartilhados
-│   ├── mypst_styles.css
-│   ├── psnp_styles.css
-│   └── psxt_styles.css
-├── background.js            # Service worker em background (Manifest V3)
-├── manifest.json            # Manifesto de configuração da extensão Chrome
-├── .gitignore               # Regras de exclusão para o repositório Git
-└── README.md                # Documentação do projeto
-```
+4. Dê **F5** na página do site de troféus para carregar as alterações imediatamente.
 
 ---
 
 ## 🌐 Compatibilidade
 
-Testado e compatível com navegadores baseados em **Chromium** (versão 88 ou superior com suporte a Manifest V3):
+Totalmente homologado para navegadores baseados no motor **Chromium** (versão 88 ou superior, suporte a Manifest V3):
 - Google Chrome
 - Microsoft Edge
 - Brave Browser
@@ -180,39 +214,26 @@ Testado e compatível com navegadores baseados em **Chromium** (versão 88 ou su
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Manifest V3** (padrão mais recente e seguro de extensões do Chrome)
-- **Vanilla JavaScript (ES6+)**
-- **HTML5 Canvas API** (para renderização gráfica dos cartões em 2D)
-- **CSS3** (com variáveis CSS e temas customizados)
+- **Google Chrome Extensions Manifest V3**
+- **JavaScript Moderno (ES6+)**
+- **HTML5 Canvas API** (Renderização gráfica 2D)
+- **Chrome Storage API** (`chrome.storage.local` para soberania de dados)
+- **CSS3 Moderno** (Flexbox, Grid, Animações e Glassmorphism)
+- **Node.js Test Runner / Assertions** (Garantia contínua de qualidade)
 
 ---
 
 ## 🤝 Contribuição
 
-Contribuições, correções de bugs e novos modelos de cartões são sempre bem-vindos!
-
-1. Faça um Fork do projeto.
-2. Crie uma branch para sua funcionalidade:
-   ```bash
-   git checkout -b feature/novo-modelo-cartao
-   ```
-3. Faça commit das suas alterações:
-   ```bash
-   git commit -m "feat: adiciona novo modelo de cartão para PSX Trophies"
-   ```
-4. Envie para o branch remoto:
-   ```bash
-   git push origin feature/novo-modelo-cartao
-   ```
+Contribuições para novos modelos de cartões, regras de auditoria ou otimizações são bem-vindas:
+1. Faça um Fork do repositório.
+2. Crie uma branch para a sua funcionalidade (`git checkout -b feature/nova-funcionalidade`).
+3. Commit suas alterações (`git commit -m "feat: adiciona nova funcionalidade"`).
+4. Envie para o branch remoto (`git push origin feature/nova-funcionalidade`).
 5. Abra um **Pull Request**.
 
 ---
 
 ## 📄 Licença
 
-Este projeto é disponibilizado para a comunidade sob a licença [MIT](LICENSE).
-Sinta-se livre para usar, estudar e contribuir!
-
-## Contato
-
-contato@projectcard.com.br
+Distribuído sob a licença [MIT](LICENSE). Desenvolvido por e para a comunidade de caçadores de troféus PlayStation.
