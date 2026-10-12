@@ -71,3 +71,13 @@ temp/
 # Documentos e Análises Internas Locais
 ANALISE_CARTOES_VARIADOS.md
 ANALISE_MODULARIZACAO.md
+
+# Testes locais e scripts de verificação
+tests/
+test/
+*.test.js
+*.spec.js
+
+# Dumps temporários de HTML
+temp_*.html
+

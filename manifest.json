@@ -34,6 +34,7 @@
         "content/renderers/pggRenderer.js",
         "content/renderers/psnlRenderer.js",
         "content/renderers/haremGalasRenderer.js",
+        "content/modules/trophyTimeline.js",
         "content/psxt_script.js"
       ],
       "css": [

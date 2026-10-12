@@ -57,8 +57,20 @@ function updateSpecialRenderers() {
     }
 }
 
+console.log('[projectcardEX] Script carregado para psxtrophies.com.br');
+
+// Instancia e inicializa a timeline de troféus para páginas de jogos
+const trophyTimeline = typeof PsxtTrophyTimeline !== 'undefined' ? new PsxtTrophyTimeline({ lang: 'pt' }) : null;
+if (trophyTimeline) {
+    trophyTimeline.init();
+}
+
 // Inicializa a UI periodicamente caso a página mude (SPA)
 setInterval(() => {
     updateSpecialRenderers();
     uiController.injectUI();
+    if (trophyTimeline) {
+        trophyTimeline.update();
+    }
 }, 1500);
+
