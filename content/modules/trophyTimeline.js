@@ -83,11 +83,13 @@ class PsxtTrophyTimeline {
 
         // Extrai dados dos troféus conquistados
         const earnedList = [];
-        for (const li of trophyItems) {
+        for (let idx = 0; idx < trophyItems.length; idx++) {
+            const li = trophyItems[idx];
             const dateData = this.extractTrophyDate(li);
             if (dateData) {
                 earnedList.push({
                     li,
+                    domIndex: idx,
                     ...dateData
                 });
             } else {
@@ -100,8 +102,15 @@ class PsxtTrophyTimeline {
 
         if (earnedList.length === 0) return;
 
-        // Ordena cronologicamente por timestamp (o mais antigo é T_0 na posição 0)
-        earnedList.sort((a, b) => a.timestamp - b.timestamp);
+        // Ordena cronologicamente por timestamp (o mais antigo é T_0 na posição 0).
+        // Em caso de empate no mesmo segundo, o troféu posicionado mais abaixo no DOM (maior domIndex)
+        // é considerado conquistado primeiro, respeitando a leitura cronológica de baixo para cima do site.
+        earnedList.sort((a, b) => {
+            if (a.timestamp !== b.timestamp) {
+                return a.timestamp - b.timestamp;
+            }
+            return b.domIndex - a.domIndex;
+        });
 
         const firstTrophy = earnedList[0];
 

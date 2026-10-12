@@ -2,50 +2,172 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>Project Card EX</title>
+  <title>projectcardEX — Menu</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
+  <!-- Header do Popup -->
   <header class="popup-header">
-    <div class="title-row">
-      <h2>Project Card <span class="accent">EX</span></h2>
-      <span class="version-badge">v1.0.0</span>
+    <div class="header-main-row">
+      <div class="logo-group">
+        <span class="logo-icon">🎮</span>
+        <h2>projectcard <span class="accent">EX</span></h2>
+        <span class="version-badge">v1.1.0</span>
+      </div>
+      <div id="connection-status-dot" class="status-dot active" title="Extensão ativa no navegador"></div>
     </div>
-    <p class="subtitle">Gerador de cartões de perfil para caçadores de troféus PlayStation.</p>
+
+    <!-- Navegação por Abas -->
+    <nav class="popup-tabs">
+      <button class="tab-btn active" data-tab="tab-overview">
+        <span class="tab-icon">📊</span> Início
+      </button>
+      <button class="tab-btn" data-tab="tab-rules">
+        <span class="tab-icon">⚖️</span> Regras <span id="badge-rules-count" class="tab-count-badge">0</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-presets">
+        <span class="tab-icon">🌐</span> PSN100
+      </button>
+      <button class="tab-btn" data-tab="tab-reports">
+        <span class="tab-icon">📄</span> Relatórios <span id="badge-reports-count" class="tab-count-badge">0</span>
+      </button>
+    </nav>
   </header>
 
-  <section class="popup-content">
-    <div class="status-box">
-      <span class="status-indicator"></span>
-      <span class="status-text">Extensão ativa</span>
-    </div>
+  <!-- Container de Conteúdo -->
+  <main class="popup-body">
 
-    <div class="sites-section">
-      <h3>Sites Suportados</h3>
-      <ul class="sites-list">
-        <li>
-          <strong>PSX Trophies</strong>
-          <span>psxtrophies.com.br</span>
-        </li>
-        <li>
-          <strong>MyPST</strong>
-          <span>mypst.com.br</span>
-        </li>
-        <li>
-          <strong>PSNProfiles</strong>
-          <span>psnprofiles.com</span>
-        </li>
-      </ul>
-    </div>
+    <!-- ============================================== -->
+    <!-- ABA 1: VISÃO GERAL / INÍCIO -->
+    <!-- ============================================== -->
+    <section id="tab-overview" class="tab-content active">
+      <div class="overview-metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Minhas Regras</span>
+          <span id="metric-rules-count" class="metric-value">0</span>
+          <span class="metric-sub">salvas localmente</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Presets PSN100</span>
+          <span id="metric-presets-count" class="metric-value">10</span>
+          <span id="metric-presets-status" class="metric-sub text-green">Ativados</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Denúncias</span>
+          <span id="metric-reports-count" class="metric-value">0</span>
+          <span class="metric-sub">no histórico</span>
+        </div>
+      </div>
 
-    <div class="info-note">
-      <p>Acesse o perfil de um jogador em qualquer um dos sites suportados para gerar os cartões personalizados.</p>
-    </div>
-  </section>
+      <div class="section-block">
+        <h4 class="block-title">Status da Extensão</h4>
+        <div class="status-card-active">
+          <div class="status-indicator-pulse"></div>
+          <div>
+            <strong>Módulos Operantes</strong>
+            <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">
+              Gerador de Cartões, Linha do Tempo e Verificação Anti-Cheat ativos.
+            </p>
+          </div>
+        </div>
+      </div>
 
+      <div class="section-block">
+        <h4 class="block-title">Sites Suportados</h4>
+        <div class="supported-sites-grid">
+          <a href="https://psxtrophies.com.br" target="_blank" class="site-chip active">
+            <span class="chip-dot"></span> PSX Trophies
+          </a>
+          <a href="https://mypst.com.br" target="_blank" class="site-chip active">
+            <span class="chip-dot"></span> MyPST
+          </a>
+          <a href="https://psnprofiles.com" target="_blank" class="site-chip active">
+            <span class="chip-dot"></span> PSNProfiles
+          </a>
+        </div>
+      </div>
+
+      <div class="tip-banner">
+        💡 <strong>Dica:</strong> Acesse a página de troféus de qualquer jogador para visualizar a linha do tempo ou emitir relatórios de denúncia pelo ícone ⚠️ ao lado do tempo.
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ABA 2: MINHAS REGRAS -->
+    <!-- ============================================== -->
+    <section id="tab-rules" class="tab-content">
+      <div class="rules-toolbar">
+        <input type="text" id="rules-search-input" placeholder="🔍 Filtrar por jogo ou NPWR..." class="search-input" />
+        <div class="toolbar-actions">
+          <button id="btn-export-rules" class="action-btn" title="Baixar arquivo JSON com suas regras">
+            📤 Exportar
+          </button>
+          <label class="action-btn file-label" title="Carregar arquivo JSON de regras">
+            📥 Importar
+            <input type="file" id="file-import-rules" accept=".json" style="display: none;" />
+          </label>
+        </div>
+      </div>
+
+      <div id="rules-list-container" class="items-list-container">
+        <!-- Renderizado dinamicamente via popup.js -->
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ABA 3: PRESETS PSN100 -->
+    <!-- ============================================== -->
+    <section id="tab-presets" class="tab-content">
+      <div class="presets-toggle-card">
+        <div>
+          <strong>Verificação com Catálogo PSN100</strong>
+          <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">
+            Aplica regras clássicas da comunidade internacional para detecção automática de cheaters.
+          </p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="psn100-toggle" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="section-block">
+        <h4 class="block-title">Jogos e Regras Integradas</h4>
+        <div id="presets-list-container" class="items-list-container">
+          <!-- Renderizado dinamicamente via popup.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ABA 4: HISTÓRICO DE RELATÓRIOS -->
+    <!-- ============================================== -->
+    <section id="tab-reports" class="tab-content">
+      <div class="reports-header-bar">
+        <span style="font-size: 12px; color: #94a3b8;">Denúncias geradas neste navegador:</span>
+        <button id="btn-clear-reports" class="link-btn-danger">Limpar Histórico</button>
+      </div>
+
+      <div id="reports-list-container" class="items-list-container">
+        <!-- Renderizado dinamicamente via popup.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
   <footer class="popup-footer">
     <a href="https://projectcard.com.br" target="_blank" rel="noopener noreferrer">projectcard.com.br</a>
+    <span>Armazenamento Estritamente Local</span>
   </footer>
+
+  <!-- Toasts de Notificação -->
+  <div id="popup-toast" class="popup-toast"></div>
+
+  <!-- Scripts Necessários -->
+  <script src="../content/antiCheat/antiCheatStorage.js"></script>
+  <script src="../content/antiCheat/antiCheatPresets.js"></script>
+  <script src="../content/antiCheat/antiCheatPrintView.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

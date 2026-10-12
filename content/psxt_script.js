@@ -65,12 +65,21 @@ if (trophyTimeline) {
     trophyTimeline.init();
 }
 
+// Instancia e inicializa o módulo Anti-Cheat / Denúncias para páginas de jogos
+const antiCheatUI = typeof AntiCheatUI !== 'undefined' ? new AntiCheatUI() : null;
+if (antiCheatUI) {
+    antiCheatUI.init();
+}
+
 // Inicializa a UI periodicamente caso a página mude (SPA)
 setInterval(() => {
     updateSpecialRenderers();
     uiController.injectUI();
     if (trophyTimeline) {
         trophyTimeline.update();
+    }
+    if (antiCheatUI) {
+        antiCheatUI.update();
     }
 }, 1500);
 

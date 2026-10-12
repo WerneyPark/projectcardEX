@@ -14,6 +14,9 @@
   "background": {
     "service_worker": "background.js"
   },
+  "permissions": [
+    "storage"
+  ],
   "action": {
     "default_popup": "popup/popup.html"
   },
@@ -34,12 +37,20 @@
         "content/renderers/pggRenderer.js",
         "content/renderers/psnlRenderer.js",
         "content/renderers/haremGalasRenderer.js",
+        "content/antiCheat/antiCheatStorage.js",
+        "content/antiCheat/antiCheatPresets.js",
+        "content/antiCheat/antiCheatEngine.js",
+        "content/antiCheat/antiCheatPrintView.js",
+        "content/antiCheat/antiCheatRuleModal.js",
+        "content/antiCheat/antiCheatReportModal.js",
+        "content/antiCheat/antiCheatUI.js",
         "content/modules/trophyTimeline.js",
         "content/psxt_script.js"
       ],
       "css": [
         "styles/common.css",
-        "styles/psxt_styles.css"
+        "styles/psxt_styles.css",
+        "styles/antiCheat_styles.css"
       ],
       "run_at": "document_end"
     },
