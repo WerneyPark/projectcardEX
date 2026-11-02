@@ -88,15 +88,19 @@ class UIController {
 
         modalSection.appendChild(container);
 
-        if (insertPosition === 'before') {
+        const pos = typeof insertPosition === 'function'
+            ? insertPosition(anchorEl)
+            : (anchorEl.closest && anchorEl.closest('#menu table tr') ? 'before' : insertPosition);
+
+        if (pos === 'before') {
             anchorEl.parentNode.insertBefore(modalSection, anchorEl);
-        } else if (insertPosition === 'after') {
+        } else if (pos === 'after') {
             if (anchorEl.nextSibling) {
                 anchorEl.parentNode.insertBefore(modalSection, anchorEl.nextSibling);
             } else {
                 anchorEl.parentNode.appendChild(modalSection);
             }
-        } else if (insertPosition === 'append') {
+        } else if (pos === 'append') {
             anchorEl.appendChild(modalSection);
         }
     }

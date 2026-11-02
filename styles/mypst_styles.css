@@ -1,6 +1,6 @@
 /* ============================================================
    mypst_styles.css — Estilos específicos para o MyPST
-   Tema azul — compatível com o visual clássico do MyPST (#235bc2)
+   Tema azul/roxo — compatível com o MyPST clássico e Beta
    ============================================================ */
 
 /* Tema Específico do Botão MyPST */
@@ -9,23 +9,33 @@
   box-shadow: 0 0 20px rgba(35, 91, 194, 0.4);
 }
 
-/* Tema Específico da Seção MyPST (Barra Lateral Direita) */
+/* Tema Específico da Seção MyPST */
 .projectcardex-modal {
   background: linear-gradient(to right top, #74286e, #632a6e, #512b6b, #3f2b67, #2c2a62);
   border: 1px solid #680f6b;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  max-width: 253px;
   width: 100%;
   margin: 10px 0;
-  padding: 10px 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .projectcardex-title {
   color: #a0c0ff;
+  text-align: left;
+}
+
+/* No site clássico (barra lateral de 253px), restringe a largura e centraliza */
+#menu .projectcardex-modal {
+  max-width: 253px;
+  padding: 10px 12px;
+}
+
+#menu .projectcardex-title {
   text-align: center;
 }
 
-/* Centraliza os botões dentro dos 253px da barra lateral */
 #menu .projectcardex-container {
   justify-content: center;
 }

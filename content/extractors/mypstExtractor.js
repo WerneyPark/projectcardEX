@@ -1,15 +1,188 @@
 /**
- * MypstExtractor — Extrai dados do perfil do usuário no site MyPST (mypst.com.br).
+ * MypstExtractor — Extrai dados do perfil do usuário no site MyPST (mypst.com.br / beta.mypst.com.br).
  *
- * O MyPST é um site clássico com HTML estático + jQuery. O conteúdo de perfil
- * é carregado via AJAX após o onload, por isso o entry script usa setInterval
- * para aguardar a hidratação do DOM antes de injetar a UI.
- *
- * URL de perfil: https://mypst.com.br/rank/{username}/#!perfil
+ * Suporta dois modos de operação:
+ * 1. SPA / Novo site (beta.mypst.com.br e futura produção):
+ *    - Single Page Application (Vue 3).
+ *    - Extrai dados diretamente das APIs REST nativas:
+ *      - /api/v2/users/{username}/profile?max_regs=16
+ *      - /api/users/{username}/stats/
+ * 2. Site Clássico / Legado (mypst.com.br):
+ *    - HTML estático + jQuery com carregamento AJAX das abas de perfil e estatísticas.
  */
 class MypstExtractor extends BaseExtractor {
     async extractData(onProgress) {
-        if (onProgress) onProgress("Lendo dados principais...");
+        const isSpa = typeof document !== 'undefined' && (
+            !!document.getElementById('app') ||
+            (typeof window !== 'undefined' && window.location.hostname.startsWith('beta.')) ||
+            !document.querySelector('#menu')
+        );
+
+        if (isSpa) {
+            return this.extractFromSpa(onProgress);
+        }
+        return this.extractFromLegacy(onProgress);
+    }
+
+    /**
+     * Extração para o novo MyPST (SPA / Vue 3 / REST API).
+     */
+    async extractFromSpa(onProgress) {
+        if (onProgress) onProgress("Identificando perfil no MyPST...");
+
+        const RESERVED = new Set([
+            'jogos', 'ranking', 'hall', 'badges', 'guias', 'boosts', 'boost', 
+            'faq', 'forum', 'myplus', 'mymyplus', 'login', 'cadastro', 
+            'painel', 'stats', 'recuperar-senha', 'redefinir-senha', 'central-de-ban', 'central_de_ban'
+        ]);
+
+        let psnId = '';
+        if (typeof window !== 'undefined' && window.location) {
+            const pathSegments = window.location.pathname.split('/').filter(Boolean);
+            if (pathSegments.length > 0 && !RESERVED.has(pathSegments[0].toLowerCase())) {
+                psnId = pathSegments[0];
+            }
+        }
+
+        if (!psnId && typeof document !== 'undefined') {
+            const h2 = document.querySelector('h2');
+            if (h2 && h2.textContent) {
+                psnId = h2.textContent.trim();
+            }
+        }
+
+        if (!psnId && typeof document !== 'undefined') {
+            const titleEl = document.querySelector('title');
+            const titleText = titleEl ? (titleEl.innerText || titleEl.textContent || '') : '';
+            const m = titleText.match(/myPSt\s*\|\s*(?:Perfil de\s*)?([^\s\-]+)/i);
+            if (m) psnId = m[1].trim();
+        }
+
+        if (!psnId) {
+            console.warn("MyPST SPA: PSN ID não identificado, tentando modo legado...");
+            return this.extractFromLegacy(onProgress);
+        }
+
+        if (onProgress) onProgress("Buscando dados da API MyPST...");
+
+        try {
+            const [profileRes, statsRes] = await Promise.all([
+                fetch(`/api/v2/users/${encodeURIComponent(psnId)}/profile?max_regs=16`)
+                    .then(r => r.ok ? r.json() : null)
+                    .catch(err => {
+                        console.error("Erro ao buscar /api/v2/users profile:", err);
+                        return null;
+                    }),
+                fetch(`/api/users/${encodeURIComponent(psnId)}/stats/`)
+                    .then(r => r.ok ? r.json() : null)
+                    .catch(err => {
+                        console.error("Erro ao buscar /api/users stats:", err);
+                        return null;
+                    })
+            ]);
+
+            if (!profileRes && !statsRes) {
+                console.warn("MyPST SPA APIs falharam, tentando modo legado...");
+                return this.extractFromLegacy(onProgress);
+            }
+
+            const actualPsnId = profileRes?.psn_id || psnId;
+            const avatar = profileRes?.avatar || '';
+            const frase = profileRes?.frase || '';
+            const usuarioDesde = profileRes?.date_joined || '';
+            const usuarioNumero = ''; // Omitido na nova arquitetura do MyPST
+
+            const allPlat = profileRes?.platforms?.all || {};
+            const level = String(allPlat.level ?? '0');
+            const plat = String(allPlat.platinum ?? '0');
+            const gold = String(allPlat.gold ?? '0');
+            const silver = String(allPlat.silver ?? '0');
+            const bronze = String(allPlat.bronze ?? '0');
+            const totalTrophies = String(allPlat.total ?? profileRes?.have_all_my_trophies ?? '0');
+            const pontosPSN = String(allPlat.points ?? '0');
+            const pdm = String(Math.round(Number(allPlat.pdm ?? 0)) || '0');
+
+            const totalJogos = String(profileRes?.all_games_100 ?? statsRes?.all_games_100 ?? '0');
+            const jogos100 = String(statsRes?.my_all_games_100 ?? '0');
+            const jogosCompletos = jogos100;
+            const percentual100 = statsRes?.perc_all_games_100 != null
+                ? `${statsRes.perc_all_games_100}%`
+                : (profileRes?.perc_all_my_trophies != null ? `${profileRes.perc_all_my_trophies}%` : '0%');
+
+            const counters = profileRes?.counters || {};
+            const mensal = String(counters.mensal ?? statsRes?.num_vezes_lider_mensal ?? '0');
+            const semanal = String(counters.semanal ?? statsRes?.num_vezes_lider_semanal ?? '0');
+            const guias = String(counters.guide ?? statsRes?.guide_count ?? '0');
+            const pioneiro = String(counters.pion ?? statsRes?.pion_count ?? '0');
+            const velocista = String(counters.veloc ?? statsRes?.veloc_count ?? '0');
+            const tartaruga = String(counters.tart ?? statsRes?.tart_count ?? '0');
+            const totalBadges = String(counters.badges ?? '0');
+
+            let imgPrimeiraPlatina = '';
+            if (Array.isArray(profileRes?.milestones)) {
+                const pp = profileRes.milestones.find(m => m && m.tipo === 'Primeira Platina');
+                if (pp?.info) {
+                    imgPrimeiraPlatina = pp.info.trophy_img_full || pp.info.trophy_img || '';
+                }
+            }
+
+            let rankingGeral = '0';
+            let rankingDificuldade = '0';
+            if (Array.isArray(profileRes?.rank)) {
+                const rGeral = profileRes.rank.find(r => r && r.type === 'GERAL' && r.pf === 'all');
+                if (rGeral && rGeral.rank) rankingGeral = String(rGeral.rank);
+                const rDif = profileRes.rank.find(r => r && r.type === 'DIFICULDADE' && r.pf === 'all');
+                if (rDif && rDif.rank) rankingDificuldade = String(rDif.rank);
+            }
+
+            return {
+                psnId: actualPsnId,
+                avatar,
+                level,
+                plat,
+                gold,
+                silver,
+                bronze,
+                totalTrophies,
+                jogosCompletos,
+                jogos100,
+                totalJogos,
+                pontosPSN,
+                mensal,
+                semanal,
+                guias,
+                tartaruga,
+                velocista,
+                pioneiro,
+                totalBadges,
+                percentual100,
+                usuarioDesde,
+                usuarioNumero,
+                pdm,
+                rankingGeral,
+                rankingDificuldade,
+                frase,
+                pontosPH: '0',
+                completudeGeral: percentual100,
+                completudePlatina: '0',
+                rankingRegional: '0',
+                rankingEstadual: '0',
+                trofeusPorDia: '0',
+                platinasRaras: imgPrimeiraPlatina ? [imgPrimeiraPlatina] : [],
+                dicas: String(counters.tip ?? statsRes?.tip_count ?? '0'),
+                likes: String(counters.curtir ?? statsRes?.curtir_count ?? '0')
+            };
+        } catch (e) {
+            console.error("Erro na extração MyPST SPA:", e);
+            return this.extractFromLegacy(onProgress);
+        }
+    }
+
+    /**
+     * Extração legado para o site clássico do MyPST (mypst.com.br).
+     */
+    async extractFromLegacy(onProgress) {
+        if (onProgress) onProgress("Lendo dados principais (modo clássico)...");
 
         // --- PSN ID ---
         const titleEl = document.querySelector('title');
@@ -20,7 +193,6 @@ class MypstExtractor extends BaseExtractor {
         if (titleMatch) psnId = titleMatch[1].trim();
 
         // --- AVATAR ---
-        // O avatar fica dentro da div com background fundo-avatar.jpg
         let avatar = '';
         const avatarWrapper = document.querySelector('div[style*="fundo-avatar"]');
         if (avatarWrapper) {
@@ -34,14 +206,11 @@ class MypstExtractor extends BaseExtractor {
         }
 
         // --- TROFÉUS ---
-        // A tabela possui rows por plataforma (txt19) e o total na row txt09.
-        // Colunas: [plataforma, Plat, Gold, Silver, Bronze, Total, 100%]
         let plat = '0', gold = '0', silver = '0', bronze = '0', totalTrophies = '0', jogos100 = '0';
 
         const totalRow = document.querySelector('tr.txt09');
         if (totalRow) {
             const tds = totalRow.querySelectorAll('td');
-            // tds[0] vazio, tds[1]=Plat, tds[2]=Gold, tds[3]=Silver, tds[4]=Bronze, tds[5]=Total, tds[6]=100%
             if (tds.length >= 7) {
                 plat         = (tds[1].textContent || '').trim() || '0';
                 gold         = (tds[2].textContent || '').trim() || '0';
@@ -54,13 +223,11 @@ class MypstExtractor extends BaseExtractor {
 
         // --- LEVEL ---
         let level = '0';
-        // Level fica em <span class="txt08"> após a img starlevel.png
         const levelSpan = document.querySelector('span.txt08');
         if (levelSpan) level = (levelSpan.textContent || '').trim();
 
         // --- PONTOS PSN ---
         let pontosPSN = '0';
-        // Formato: "624,585 Pontos" dentro de span.txt09
         const pontosSpans = Array.from(document.querySelectorAll('span.txt09'));
         const pontosSpan = pontosSpans.find(s => (s.textContent || '').includes('Pontos'));
         if (pontosSpan) {
@@ -87,7 +254,7 @@ class MypstExtractor extends BaseExtractor {
         });
         let totalJogos = sumJogos > 0 ? sumJogos.toString() : jogos100;
 
-        // --- FETCH DADOS EXTRAS VIA AJAX (Badges, Primeira Platina, 100% Total, Rankings, PDM) ---
+        // --- FETCH DADOS EXTRAS VIA AJAX ---
         let percentual100 = '0%';
         let usuarioDesde = '';
         let usuarioNumero = '';
@@ -103,7 +270,6 @@ class MypstExtractor extends BaseExtractor {
         if (psnId) {
             if (onProgress) onProgress("Buscando estatísticas, rankings e PDM...");
             try {
-                // Dispara os fetches de perfil, estatísticas e PDM em paralelo
                 const [perfilHtml, statsHtml, pdmHtml] = await Promise.all([
                     fetch(`/rank/${psnId}/perfil/`, {
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -125,7 +291,7 @@ class MypstExtractor extends BaseExtractor {
                     })
                 ]);
 
-                // 1. Parsing da Aba Perfil (Milestones, Join Date, Badges, Rankings)
+                // 1. Parsing da Aba Perfil
                 if (perfilHtml) {
                     const doc = new DOMParser().parseFromString(perfilHtml, 'text/html');
 
@@ -135,7 +301,7 @@ class MypstExtractor extends BaseExtractor {
                         return prev && (prev.textContent || '').includes('DESDE');
                     });
                     if (desdeSpan) {
-                        const match = (desdeSpan.textContent || '').match(/(\d{2}\/\d{2}\/\d{4})\s*#(\d+)/);
+                        const match = (desdeSpan.textContent || '').match(/(\d{2}\/\d{2}\/\d{4})\s*#(\d+[\d.]*)/);
                         if (match) {
                             usuarioDesde = match[1];
                             usuarioNumero = match[2];
@@ -144,13 +310,13 @@ class MypstExtractor extends BaseExtractor {
                             if (dMatch) usuarioDesde = dMatch[1];
                             const innerSpan = desdeSpan.querySelector('span');
                             if (innerSpan) {
-                                const nMatch = (innerSpan.textContent || '').match(/#(\d+)/);
+                                const nMatch = (innerSpan.textContent || '').match(/#(\d+[\d.]*)/);
                                 if (nMatch) usuarioNumero = nMatch[1];
                             }
                         }
                     }
 
-                    // Badges (baseado no src da imagem para não depender da ordem exata)
+                    // Badges
                     const bMap = {
                         'Guias': 'iconCardao05',
                         'Mensal': 'iconCardao03',
@@ -197,7 +363,7 @@ class MypstExtractor extends BaseExtractor {
                         }
                     }
 
-                    // Rankings: Geral e Dificuldade
+                    // Rankings
                     const aGeral = Array.from(doc.querySelectorAll('a.lnk02')).find(a => {
                         const txt = a.textContent || '';
                         const href = a.getAttribute('href') || '';
@@ -229,7 +395,7 @@ class MypstExtractor extends BaseExtractor {
                     }
                 }
 
-                // 2. Parsing da Aba Estatísticas (Eficácia 100% Total e Total de Jogos)
+                // 2. Parsing da Aba Estatísticas
                 if (statsHtml) {
                     const doc = new DOMParser().parseFromString(statsHtml, 'text/html');
                     const tds = Array.from(doc.querySelectorAll('td.txt09'));
@@ -247,7 +413,7 @@ class MypstExtractor extends BaseExtractor {
                     }
                 }
 
-                // 3. Parsing do PDM (Ranking de Dificuldade)
+                // 3. Parsing do PDM
                 if (pdmHtml) {
                     const doc = new DOMParser().parseFromString(pdmHtml, 'text/html');
                     const links = Array.from(doc.querySelectorAll('a.link_txt_rank'));
@@ -302,9 +468,8 @@ class MypstExtractor extends BaseExtractor {
             rankingGeral,
             rankingDificuldade,
             frase,
-            // Campos não disponíveis no MyPST (mantidos como '0' para compatibilidade)
             pontosPH: '0',
-            completudeGeral: percentual100, // Preenche a completude geral também
+            completudeGeral: percentual100,
             completudePlatina: '0',
             rankingRegional: '0',
             rankingEstadual: '0',
@@ -314,4 +479,11 @@ class MypstExtractor extends BaseExtractor {
             likes: '0'
         };
     }
+}
+
+if (typeof globalThis !== 'undefined') {
+    globalThis.MypstExtractor = MypstExtractor;
+}
+if (typeof window !== 'undefined') {
+    window.MypstExtractor = MypstExtractor;
 }

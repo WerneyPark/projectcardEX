@@ -62,11 +62,12 @@ class MypstDefaultRenderer extends BaseRenderer {
             ctx.fillText(data.frase || "Sic Parvis Magna", 210, 467, 381);
         }
 
-        if (data.usuarioDesde && data.usuarioNumero) {
+        if (data.usuarioDesde) {
             ctx.font = '12px "Gemunu Libre"';
             ctx.textAlign = "right";
             ctx.fillStyle = '#ffffff';
-            ctx.fillText( "#" + data.usuarioNumero + " - " + data.usuarioDesde,  400, 498, 381);
+            const userText = data.usuarioNumero ? "#" + data.usuarioNumero + " - " + data.usuarioDesde : data.usuarioDesde;
+            ctx.fillText(userText, 400, 498, 381);
         }
 
 

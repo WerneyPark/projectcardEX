@@ -73,11 +73,12 @@ class Mypst2Renderer extends BaseRenderer {
             });
         }
 
-        if (data.usuarioDesde && data.usuarioNumero) {
+        if (data.usuarioDesde) {
             ctx.font = '12px "Gemunu Libre"';
             ctx.textAlign = "right";
             ctx.fillStyle = isDark ? '#ffffff' : '#000000';
-            ctx.fillText( "#" + data.usuarioNumero + " - " + data.usuarioDesde,  382, 451, 381);
+            const userText = data.usuarioNumero ? "#" + data.usuarioNumero + " - " + data.usuarioDesde : data.usuarioDesde;
+            ctx.fillText(userText, 382, 451, 381);
         }
 
 

@@ -9,9 +9,9 @@
  */
 const mypstExtractor = new MypstExtractor();
 const mypstController = new UIController(mypstExtractor, {
-    primarySelector: '#menu tr:has(img[src*="Lancamentos"])',
-    fallbackSelector: '#menu tr:has(a[href*="jogos/?index=lan"]), #menu a[href*="jogos/?index=lan"], #menu img[src*="Lancamentos"]',
-    insertPosition: 'before'
+    primarySelector: 'nav[aria-label="Seções do perfil"], #menu tr:has(img[src*="Lancamentos"])',
+    fallbackSelector: 'div.flex.flex-col.min-w-0.w-full.rounded-sm.overflow-hidden.bg-primaria, #menu tr:has(a[href*="jogos/?index=lan"]), #menu a[href*="jogos/?index=lan"], #menu img[src*="Lancamentos"]',
+    insertPosition: (anchorEl) => (anchorEl.closest && anchorEl.closest('#menu')) ? 'before' : 'after'
 });
 
 mypstController.registerRenderer(
